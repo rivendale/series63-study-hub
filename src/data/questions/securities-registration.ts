@@ -1,0 +1,78 @@
+import type { Question } from '../questions';
+
+export const items: Question[] = [
+  {
+    id: 82,
+    topic: 'securities-registration',
+    q: 'Registration by Coordination becomes effective:',
+    choices: [
+      'At noon on the second business day after filing',
+      '30 days after the federal effective date',
+      'At the same moment as federal registration',
+      'When the Administrator orders it',
+    ],
+    answer: 2,
+    exp: 'Coordination is concurrent with the federal Securities Act of 1933 registration and becomes effective at the same moment.',
+    difficulty: 'medium',
+  },
+  {
+    id: 83,
+    topic: 'securities-registration',
+    q: 'Which registration method is for issues with NO federal registration (e.g., purely intrastate offerings)?',
+    choices: ['Notification', 'Coordination', 'Qualification', 'Federal preemption'],
+    answer: 2,
+    exp: 'Qualification is the most demanding method. It applies to purely state offerings (e.g., Rule 147 intrastate). Becomes effective when the Administrator orders.',
+    difficulty: 'easy',
+  },
+  {
+    id: 84,
+    topic: 'securities-registration',
+    q: 'Which is NOT a federal covered security?',
+    choices: [
+      'NYSE-listed common stock',
+      'A Reg D Rule 506 offering',
+      'A Reg D Rule 504 offering',
+      'A registered investment company under the \'40 Act',
+    ],
+    answer: 2,
+    exp: 'Reg D Rule 504 is NOT federal covered — states retain full registration authority. Rule 506 IS federal covered (preempted from state registration).',
+    difficulty: 'medium',
+  },
+  {
+    id: 85,
+    topic: 'securities-registration',
+    q: 'May the Administrator deny a securities registration solely because the offering is "speculative"?',
+    choices: [
+      'Yes — the Administrator has broad merit-review authority',
+      'Yes — but only if disclosure is also incomplete',
+      'No — provided disclosure is adequate, the Administrator must use statutory grounds (fraud, misstatement, etc.)',
+      'No — only the SEC may make speculation findings',
+    ],
+    answer: 2,
+    exp: 'The Administrator cannot deny based solely on a "speculative" judgment if disclosure is adequate. Statutory grounds are required.',
+    difficulty: 'hard',
+  },
+  {
+    id: 86,
+    topic: 'securities-registration',
+    q: 'A state-registered offering is typically effective for:',
+    choices: ['90 days', '6 months', '1 year', 'Indefinitely'],
+    answer: 2,
+    exp: 'State securities registration is typically effective for 1 year from the effective date.',
+    difficulty: 'easy',
+  },
+  {
+    id: 87,
+    topic: 'securities-registration',
+    q: 'Notice filing on a federal covered security:',
+    choices: [
+      'Is preempted by NSMIA',
+      'May still be required by the state, with a fee',
+      'Is identical to full registration',
+      'Only applies to mutual funds',
+    ],
+    answer: 1,
+    exp: 'NSMIA preempted state registration of federal covered securities, but states may require notice filings and fees.',
+    difficulty: 'medium',
+  },
+];

@@ -1,0 +1,73 @@
+import type { Question } from '../questions';
+
+export const items: Question[] = [
+  {
+    id: 109,
+    topic: 'recent-updates',
+    q: 'The compliance date for the SEC Investment Adviser Marketing Rule (Rule 206(4)-1) was:',
+    choices: ['June 30, 2020', 'November 4, 2022', 'December 29, 2022', 'June 12, 2023'],
+    answer: 1,
+    exp: 'The Marketing Rule became effective May 4, 2021 with a November 4, 2022 compliance date. It replaced the prior advertising rule and cash solicitation rule.',
+    difficulty: 'medium',
+  },
+  {
+    id: 110,
+    topic: 'recent-updates',
+    q: 'Under the SECURE Act 2.0, the current RMD age is:',
+    choices: ['70½', '72', '73', '75'],
+    answer: 2,
+    exp: 'SECURE 2.0 (signed Dec 29, 2022) raised the RMD age to 73, rising further to 75 in 2033. Older study materials saying 70½ or 72 are obsolete.',
+    difficulty: 'easy',
+  },
+  {
+    id: 111,
+    topic: 'recent-updates',
+    q: 'Reg BI applies to which obligations for BDs making recommendations to retail customers?',
+    choices: [
+      'Care, Conflict of Interest, Disclosure, and Compliance',
+      'Loyalty and Care only (full fiduciary)',
+      'Suitability only',
+      'Reg BI does not apply to BDs',
+    ],
+    answer: 0,
+    exp: 'Reg BI imposes four obligations: Care, Conflict of Interest, Disclosure, and Compliance. It is a "best interest" standard short of full fiduciary.',
+    difficulty: 'medium',
+  },
+  {
+    id: 112,
+    topic: 'recent-updates',
+    q: 'Form CRS is required of:',
+    choices: [
+      'Only IAs serving retail clients',
+      'Only BDs serving retail clients',
+      'Both BDs and IAs serving retail clients',
+      'Only federal covered IAs',
+    ],
+    answer: 2,
+    exp: 'Form CRS (relationship summary) is required of both BDs and IAs serving retail clients (since June 30, 2020). It is 2 pages (4 max for dual registrants).',
+    difficulty: 'easy',
+  },
+  {
+    id: 113,
+    topic: 'recent-updates',
+    q: 'AG EVEP (Agent Exam Validity Extension Program) extends Series 63 exam validity to:',
+    choices: ['Standard 2 years', 'Up to 3 years', 'Up to 5 years', 'Indefinitely'],
+    answer: 2,
+    exp: 'EVEP extends exam validity to up to 5 years (vs. the standard 2-year window) for persons who terminate registration but stay current via annual CE. AG EVEP requires FINRA MQP enrollment and a $35 annual fee.',
+    difficulty: 'medium',
+  },
+  {
+    id: 114,
+    topic: 'recent-updates',
+    q: 'Failure to complete IAR Continuing Education in an adopting state results in:',
+    choices: [
+      'A monetary fine only',
+      'The IAR\'s registration becoming "CE inactive" — they cannot do business until current',
+      'Automatic loss of all client relationships',
+      'Federal preemption',
+    ],
+    answer: 1,
+    exp: 'IAR CE non-compliance renders the IAR "CE inactive". They retain registration but cannot do business until they complete the required 12 credits (6 Products/Practice + 6 Ethics).',
+    difficulty: 'medium',
+  },
+];
