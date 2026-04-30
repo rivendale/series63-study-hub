@@ -1,0 +1,88 @@
+import type { Question } from '../questions';
+
+export const items: Question[] = [
+  {
+    id: 51,
+    topic: 'fraud',
+    q: 'USA anti-fraud provisions apply to:',
+    choices: [
+      'Only registered securities',
+      'Only registered persons',
+      'All offers, sales, and purchases of any security by any person — including exempt securities and exempt transactions',
+      'Only transactions over $10,000',
+    ],
+    answer: 2,
+    exp: 'There is no exemption from anti-fraud. The USA\'s anti-fraud provisions reach every offer, sale, or purchase of any security by any person — registered or not.',
+    difficulty: 'easy',
+  },
+  {
+    id: 52,
+    topic: 'fraud',
+    q: 'A material fact, per Basic v. Levinson, is one that:',
+    choices: [
+      'Affects the price of the security',
+      'A reasonable investor would consider important in making an investment decision',
+      'Is required to be disclosed in a prospectus',
+      'Has been publicly reported in the media',
+    ],
+    answer: 1,
+    exp: 'Per Basic v. Levinson and TSC Industries v. Northway, a material fact is one a reasonable investor would consider important in making an investment decision.',
+    difficulty: 'medium',
+  },
+  {
+    id: 53,
+    topic: 'fraud',
+    q: 'A tippee receives material non-public information from an insider. The tippee is liable if:',
+    choices: [
+      'The tippee is a registered agent',
+      'The tippee paid for the information',
+      'The tippee knew or should have known of the tipper\'s breach of duty',
+      'The tippee made a profit',
+    ],
+    answer: 2,
+    exp: 'Tippee liability requires that the tippee knew or should have known of the tipper\'s breach of fiduciary duty, regardless of payment or profit.',
+    difficulty: 'hard',
+  },
+  {
+    id: 54,
+    topic: 'fraud',
+    q: 'Which of the following statements is most likely fraud under §501?',
+    choices: [
+      '"This is a high-quality investment with a track record."',
+      '"Based on our research and disclosed assumptions, we project 5-7% annual returns."',
+      '"This stock is guaranteed to go up 20% in 30 days."',
+      '"Past performance does not guarantee future results."',
+    ],
+    answer: 2,
+    exp: 'A specific prediction without basis ("guaranteed to go up 20% in 30 days") IS potentially fraud. Forward-looking statements with reasonable basis and disclosed assumptions are generally permitted.',
+    difficulty: 'medium',
+  },
+  {
+    id: 55,
+    topic: 'fraud',
+    q: 'Federal §10b-5 requires scienter. IA Act §206 requires:',
+    choices: [
+      'Scienter as well',
+      'May suffice with mere negligence (for civil liability)',
+      'Strict liability with no fault element',
+      'Criminal intent only',
+    ],
+    answer: 1,
+    exp: 'Under IA Act §206, negligence may be sufficient for civil liability. This is a lower bar than the federal §10b-5 scienter (intent or recklessness) standard.',
+    difficulty: 'hard',
+  },
+  {
+    id: 56,
+    topic: 'fraud',
+    q: 'Pump-and-dump is best characterized as:',
+    choices: [
+      'A permitted promotional activity',
+      'Manipulation — fraudulent inflation followed by selling',
+      'A type of securities registration',
+      'A market-making technique',
+    ],
+    answer: 1,
+    exp: 'Pump-and-dump is market manipulation: artificially inflating a stock through misleading promotion and then selling at the elevated price. It is fraud.',
+    difficulty: 'easy',
+  },
+];
