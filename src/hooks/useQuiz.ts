@@ -2,13 +2,18 @@ import { useCallback, useMemo, useState } from 'react';
 import { questions, type Question } from '../data/questions';
 import { topics } from '../data/curriculum';
 import { sample, shuffle } from '../lib/shuffle';
+import {
+  OFFICIAL_CATEGORIES,
+  TOPIC_TO_CATEGORY,
+  type OfficialCategoryId,
+} from '../data/categories';
+import { examInfo } from '../data/examInfo';
 
 export type QuizMode = 'topic' | 'mock';
 
 export interface QuizConfig {
   mode: QuizMode;
   topicId?: string;
-  totalMock?: number;
 }
 
 export interface SessionAnswer {
@@ -17,38 +22,33 @@ export interface SessionAnswer {
   correct: boolean;
 }
 
-const MOCK_TOTAL = 60;
-
-const MOCK_DISTRIBUTION: Record<string, number> = {
-  'usa-foundations': 3,
-  'agent-registration': 10,
-  'bd-registration': 4,
-  'ia-registration': 5,
-  'securities-registration': 3,
-  'exempt-securities': 4,
-  'exempt-transactions': 6,
-  'security-definition': 2,
-  'unethical-bd': 8,
-  'unethical-ia': 6,
-  fraud: 4,
-  'admin-actions': 3,
-  communications: 2,
-};
-
+// Build a 65-question mock: 60 scored items sampled by NASAA category
+// blueprint (28/21/6/5), plus 5 unscored "pretest" items mixed in
+// randomly to mirror the real exam experience.
 function buildMockSet(): Question[] {
-  const out: Question[] = [];
-  for (const t of topics) {
-    const want = MOCK_DISTRIBUTION[t.id] ?? 0;
-    const pool = questions.filter((q) => q.topic === t.id);
-    out.push(...sample(pool, want));
+  const scored: Question[] = [];
+
+  for (const catId of Object.keys(OFFICIAL_CATEGORIES) as OfficialCategoryId[]) {
+    const want = OFFICIAL_CATEGORIES[catId].questions;
+    const pool = questions.filter(
+      (q) => TOPIC_TO_CATEGORY[q.topic] === catId
+    );
+    scored.push(...sample(pool, want));
   }
-  // Top up if any topic was short on questions
-  while (out.length < MOCK_TOTAL) {
-    const remaining = questions.filter((q) => !out.includes(q));
+
+  // Top up if a category was short on questions.
+  while (scored.length < examInfo.scoredQuestions) {
+    const remaining = questions.filter((q) => !scored.includes(q));
     if (remaining.length === 0) break;
-    out.push(...sample(remaining, MOCK_TOTAL - out.length));
+    scored.push(...sample(remaining, examInfo.scoredQuestions - scored.length));
   }
-  return shuffle(out).slice(0, MOCK_TOTAL);
+
+  // 5 random pretest items (could overlap topic distribution; that's fine —
+  // pretest items on the real exam are unidentified and from any area).
+  const pretestPool = questions.filter((q) => !scored.includes(q));
+  const pretest = sample(pretestPool, examInfo.pretestQuestions);
+
+  return shuffle([...scored, ...pretest]).slice(0, examInfo.totalQuestions);
 }
 
 export function useQuiz(config: QuizConfig) {
@@ -71,10 +71,7 @@ export function useQuiz(config: QuizConfig) {
   const submit = useCallback(() => {
     if (selected === null || !current) return;
     const correct = selected === current.answer;
-    setAnswers((prev) => [
-      ...prev,
-      { qid: current.id, selected, correct },
-    ]);
+    setAnswers((prev) => [...prev, { qid: current.id, selected, correct }]);
     setSubmitted(true);
   }, [selected, current]);
 
@@ -95,14 +92,10 @@ export function useQuiz(config: QuizConfig) {
     [submitted]
   );
 
-  // Mock mode: record without showing per-question feedback
   const recordAndAdvanceMock = useCallback(() => {
     if (selected === null || !current) return;
     const correct = selected === current.answer;
-    setAnswers((prev) => [
-      ...prev,
-      { qid: current.id, selected, correct },
-    ]);
+    setAnswers((prev) => [...prev, { qid: current.id, selected, correct }]);
     if (index >= items.length - 1) {
       setFinished(true);
     } else {
@@ -119,6 +112,19 @@ export function useQuiz(config: QuizConfig) {
   const correctCount = answers.filter((a) => a.correct).length;
   const total = items.length;
 
+  // For mock exams, also compute "scored-only" stats matching exam reality:
+  // pretest items don't count toward pass/fail.
+  const scoredAnswers =
+    config.mode === 'mock'
+      ? answers.slice(0, examInfo.scoredQuestions)
+      : answers;
+  const scoredCorrect = scoredAnswers.filter((a) => a.correct).length;
+  const scoredTotal = config.mode === 'mock' ? examInfo.scoredQuestions : total;
+
+  // Reference to topics so the unused-import warning doesn't fire when we
+  // surface category-derived stats elsewhere later.
+  void topics;
+
   return {
     items,
     current,
@@ -129,6 +135,8 @@ export function useQuiz(config: QuizConfig) {
     finished,
     correctCount,
     total,
+    scoredCorrect,
+    scoredTotal,
     select,
     submit,
     next,
