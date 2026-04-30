@@ -1,0 +1,83 @@
+import type { Question } from '../questions';
+
+export const items: Question[] = [
+  {
+    id: 93,
+    topic: 'exempt-transactions',
+    q: 'A state-level private placement under the USA requires which of the following?\n\nI. ≤ 10 non-institutional persons in 12 months\nII. No general solicitation or advertising\nIII. No commission paid for non-institutional sales\nIV. ≤ 35 accredited investors',
+    choices: ['I and II only', 'I, II, and III', 'I, II, III, and IV', 'IV only'],
+    answer: 1,
+    exp: 'State private placement: ≤10 non-institutional buyers in 12 months, no general solicitation, no commission for non-institutional sales. The 35-accredited-investor limit is from federal Reg D Rule 506(b), not the state private-placement exemption.',
+    difficulty: 'hard',
+  },
+  {
+    id: 94,
+    topic: 'exempt-transactions',
+    q: 'Which of the following is NOT a court-appointed fiduciary qualifying for the exempt transaction?',
+    choices: [
+      'Executor',
+      'Trustee in bankruptcy',
+      'Trustee of an inter vivos (living) trust',
+      'Guardian',
+    ],
+    answer: 2,
+    exp: 'Trustees of living trusts are NOT court-appointed fiduciaries — they are appointed by the grantor. Executors, administrators, sheriffs, marshals, trustees in bankruptcy, guardians, and conservators ARE court-appointed.',
+    difficulty: 'medium',
+  },
+  {
+    id: 95,
+    topic: 'exempt-transactions',
+    q: 'A customer initiates a buy order for a non-exempt unregistered security. The agent should:',
+    choices: [
+      'Refuse the order',
+      'Execute and mark the order ticket "unsolicited" (the manner-of-sale exemption applies)',
+      'Register the security first',
+      'Call the Administrator for approval',
+    ],
+    answer: 1,
+    exp: 'Unsolicited transactions are exempt transactions based on the manner of sale. Marking the order ticket "unsolicited" creates the audit trail.',
+    difficulty: 'medium',
+  },
+  {
+    id: 96,
+    topic: 'exempt-transactions',
+    q: 'A pre-organization subscription qualifies as an exempt transaction if all of the following EXCEPT:',
+    choices: [
+      '≤ 10 subscribers',
+      'No commission',
+      'No payment until the corporation is organized',
+      'Subscribers must be accredited investors',
+    ],
+    answer: 3,
+    exp: 'Pre-organization subscriptions: ≤10 subscribers, no commission, no payment until incorporation. Accreditation is not required.',
+    difficulty: 'medium',
+  },
+  {
+    id: 97,
+    topic: 'exempt-transactions',
+    q: 'An exempt transaction excuses the seller from:',
+    choices: [
+      'Anti-fraud rules',
+      'Securities registration filing requirements (and certain advertising/sales literature filings)',
+      'Suitability obligations',
+      'Agent or BD registration',
+    ],
+    answer: 1,
+    exp: 'Exempt transactions excuse securities-registration filing and certain ad-filing requirements only. Anti-fraud, suitability, and agent/BD registration still apply.',
+    difficulty: 'medium',
+  },
+  {
+    id: 98,
+    topic: 'exempt-transactions',
+    q: 'A transaction with an institutional investor (e.g., a bank or pension plan with $1M+ assets) qualifies as:',
+    choices: [
+      'A federal covered security',
+      'An exempt transaction (manner of sale)',
+      'An exempt security',
+      'A registered transaction with reduced filing',
+    ],
+    answer: 1,
+    exp: 'Transactions with institutional investors are exempt TRANSACTIONS — the exemption is based on who the buyer is, not what the security is.',
+    difficulty: 'medium',
+  },
+];
