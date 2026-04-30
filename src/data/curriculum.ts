@@ -71,7 +71,7 @@ In emergencies, the Administrator may issue a **summary order** without a prior 
 
 Every registrant files an **irrevocable consent appointing the Administrator as agent for service of process** in any action under the USA. This eliminates jurisdictional barriers to enforcement.`,
     pitfalls: [
-      'A phone call from State A into State B is subject to BOTH states\' jurisdiction (originated in A, directed into B).',
+      "A phone call from State A into State B is subject to BOTH states' jurisdiction (originated in A, directed into B).",
       'A TV broadcast in State A received in State B is State A jurisdiction only — general circulation exception.',
       'Anti-fraud applies even to exempt securities and exempt transactions. There is no exemption from anti-fraud.',
       'The Administrator has authority over conduct outside the state if it affects in-state persons.',
@@ -227,13 +227,180 @@ States retain anti-fraud authority and may require notice filings and fees.`,
     pitfalls: [
       'Wealthy individuals are NEVER institutional investors. Net worth alone does not exempt a BD from registration.',
       'Place of business in a state ALWAYS triggers registration. The institutional-only exemption requires no place of business.',
-      'Bank holding companies are NOT banks — they don\'t get the bank exclusion.',
+      "Bank holding companies are NOT banks — they don't get the bank exclusion.",
     ],
     keyTerms: [
       { term: 'Broker-Dealer', definition: 'Person effecting securities transactions for others or own account' },
       { term: 'Institutional investor', definition: 'Banks, insurance cos, ICs, pension plans with $1M+ assets, BDs' },
       { term: 'Place of business', definition: 'Any office or location where the BD transacts business' },
       { term: 'Form BD', definition: 'BD registration form, filed via CRD' },
+    ],
+  },
+  {
+    id: 'ia-registration',
+    title: 'Investment Adviser Registration',
+    weight: '~10%',
+    order: 4,
+    summary:
+      'An investment adviser, for compensation, advises others on securities in the business. Federal covered IAs (≥$110M AUM, advise registered ICs, or qualify for multi-state exemption) register with SEC; smaller IAs register with states.',
+    body: `## Three-Prong Test for IA Status
+
+A person is an **investment adviser** if all three are met:
+
+1. Provides **advice on securities**
+2. Receives **compensation** (any form)
+3. Engages **in the business** of giving such advice (not isolated)
+
+All three elements must be present.
+
+## Federal vs. State Registration
+
+| AUM | Registration |
+|-----|-------------|
+| Below $100M | State |
+| $100M – $110M | Buffer band — IA may choose |
+| $110M+ | SEC (federal covered) |
+
+A federal covered IA also includes:
+
+- Advisers to **registered investment companies** (mutual funds)
+- Advisers qualifying for the **multi-state exemption** (required to register in 15+ states)
+
+## Exclusions from the IA Definition
+
+### LATE Exclusions
+
+**L**awyers, **A**ccountants, **T**eachers, **E**ngineers — when:
+
+- Advice is **incidental** to their professional practice, AND
+- They receive **no special compensation** for the advice
+
+A CPA who charges a separate fee for stock recommendations IS an IA — special compensation.
+
+### Other Exclusions
+
+- **Banks** (but NOT bank holding companies)
+- **Broker-dealers** — when advice is solely incidental to BD activities and there is no special compensation
+- **Publishers** of bona fide general circulation publications giving non-personalized advice
+- **US government securities advisers** (only)
+
+### Wrap-Fee BDs Lose the BD Exclusion
+
+A BD charging a wrap fee (single fee covering brokerage and advice) receives "special compensation" for advice. The BD exclusion is lost — IA registration applies.
+
+## IAR (Investment Adviser Representative)
+
+An **IAR** is an individual employee or agent of an IA who gives personal investment advice, manages accounts, solicits clients, or supervises any of the above. IAR registration is at the **state level**, even for federal covered IAs.
+
+## IAR De Minimis (Federal Covered IAs)
+
+Where the IAR has:
+
+- **No place of business** in the state, AND
+- **Fewer than 6 retail clients** in any 12-month period
+
+No state IAR registration is required. Place of business always triggers registration.
+
+## Form ADV
+
+- **Part 1** — Schedule of business operations, ownership, disciplinary history
+- **Part 2A** — The "brochure," plain-English narrative for clients
+- **Part 2B** — Brochure supplements for IARs
+
+Filed via **IARD** (Investment Adviser Registration Depository).
+
+## Brochure Delivery Rule
+
+The IA must deliver Form ADV Part 2A to clients:
+
+- **48+ hours** before contract, OR
+- **At signing** if client has a **5-day rescission right**
+
+Annual: brochure (or summary of material changes) within **120 days** of fiscal year end.`,
+    pitfalls: [
+      'Bank holding companies are NOT excluded. Only banks are.',
+      'A CPA charging a separate fee for investment advice IS an IA, regardless of CPA license.',
+      'Wrap-fee BDs lose the BD exclusion — special compensation kills it.',
+      'IAR registration is always at state level, even for federal covered IAs.',
+    ],
+    keyTerms: [
+      { term: 'Investment Adviser', definition: 'Person advising on securities for compensation, in the business' },
+      { term: 'Federal covered IA', definition: '$110M+ AUM, advises registered IC, or 15+ state multi-state exemption' },
+      { term: 'IAR', definition: 'Individual giving advice on behalf of an IA' },
+      { term: 'Form ADV', definition: 'IA registration form, filed via IARD' },
+      { term: 'Brochure', definition: 'Form ADV Part 2A, plain-English client disclosure document' },
+    ],
+  },
+  {
+    id: 'securities-registration',
+    title: 'Securities Registration',
+    weight: '~10%',
+    order: 5,
+    summary:
+      'Three state methods: notification (filing) for seasoned issuers, coordination concurrent with federal registration, and qualification for purely intrastate offerings. Federal covered securities are preempted from state registration but may require notice filing.',
+    body: `## Three Methods of State Securities Registration
+
+### 1. Registration by Notification (Filing)
+
+For **seasoned issuers**:
+
+- Already registered with the SEC
+- In business 3+ years
+- Meet financial criteria
+
+Fastest method. Becomes effective at noon on the second business day after filing (or sooner if Administrator orders).
+
+### 2. Registration by Coordination
+
+For issues being registered concurrently under the federal **Securities Act of 1933**.
+
+Becomes effective **at the same moment** as the federal registration. Most common method for IPOs.
+
+### 3. Registration by Qualification
+
+For offerings with **no federal registration** (e.g., purely intrastate under Rule 147). Most demanding state-level filing. Becomes effective when the Administrator orders.
+
+## Federal Covered Securities
+
+Preempted from state registration by NSMIA. Includes:
+
+- NYSE-, NYSE American-, Nasdaq-listed securities (and senior/equal securities of same issuer)
+- Investment company securities registered under the Investment Company Act of 1940
+- Reg D **Rule 506** offerings
+- Reg A+ **Tier 2** offerings
+- Securities offered to "qualified purchasers" under §18
+
+States may require **notice filing** and a fee for federal covered securities.
+
+**Reg D Rule 504 is NOT federal covered** — states retain full authority.
+
+## Registration Period
+
+Typically **1 year** from effective date.
+
+## Administrator Authority on Registration
+
+The Administrator may require:
+
+- Prospectus
+- Specimen of the security
+- Escrow of proceeds
+- Impoundment of proceeds
+- Specific use of proceeds
+- Consent to service of process
+
+The Administrator **cannot** base a denial solely on the offering being "speculative" if proper disclosure is made. Statutory grounds (fraud, misstatement, etc.) are required.`,
+    pitfalls: [
+      'Reg D Rule 504 is NOT federal covered — states retain full authority. Rule 506 IS federal covered.',
+      'Coordination becomes effective at the SAME moment as federal — not 30 days later.',
+      'The Administrator cannot deny based solely on a "speculative" judgment if disclosure is adequate.',
+    ],
+    keyTerms: [
+      { term: 'Notification', definition: 'Registration method for seasoned issuers' },
+      { term: 'Coordination', definition: "Registration concurrent with federal '33 Act" },
+      { term: 'Qualification', definition: 'Registration for offerings without federal registration' },
+      { term: 'Federal covered security', definition: 'Preempted from state registration by NSMIA' },
+      { term: 'Notice filing', definition: 'Filing required by states for federal covered securities' },
     ],
   },
 ];
