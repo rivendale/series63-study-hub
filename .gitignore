@@ -1,6 +1,11 @@
 node_modules
 dist
 dist-ssr
+
+# Generated PWA icons (built from public/icon.svg via scripts/generate-icons.mjs)
+public/icon-192.png
+public/icon-512.png
+public/favicon.ico
 .DS_Store
 *.local
 .env
