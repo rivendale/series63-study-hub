@@ -7,6 +7,8 @@ import Topics from './pages/Topics';
 import Quiz from './pages/Quiz';
 import Progress from './pages/Progress';
 import About from './pages/About';
+import Glossary from './pages/Glossary';
+import CheatSheet from './pages/CheatSheet';
 import { useTheme } from './hooks/useProgress';
 
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
           <Route path="/quiz/topic/:id" element={<Quiz mode="topic" />} />
           <Route path="/quiz/mock" element={<Quiz mode="mock" />} />
           <Route path="/progress" element={<Progress />} />
+          <Route path="/glossary" element={<Glossary />} />
+          <Route path="/cheatsheet" element={<CheatSheet />} />
           <Route path="/about" element={<About />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
