@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BookOpen, Brain, Timer, BarChart3 } from 'lucide-react';
+import { BookOpen, Brain, Timer, BarChart3, BookMarked, Sparkles } from 'lucide-react';
 import { useProgress } from '../hooks/useProgress';
 import { overallStats } from '../lib/stats';
 import { topics } from '../data/curriculum';
@@ -46,7 +46,7 @@ export default function Home() {
           <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
           <h2 className="mt-3 font-semibold">Read curriculum</h2>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            13 topics covering the full Series 63 outline.
+            14 topics covering the full Series 63 outline plus 2022–2026 updates.
           </p>
         </Link>
 
@@ -62,7 +62,7 @@ export default function Home() {
           <Timer className="w-6 h-6 text-blue-600 dark:text-blue-400" />
           <h2 className="mt-3 font-semibold">Mock exam</h2>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            {examInfo.totalQuestions} questions, {examInfo.timeMinutes} minutes, full review at the end.
+            {examInfo.totalQuestions} questions ({examInfo.scoredQuestions} scored + {examInfo.pretestQuestions} pretest), {examInfo.timeMinutes} minutes.
           </p>
         </Link>
 
@@ -71,6 +71,22 @@ export default function Home() {
           <h2 className="mt-3 font-semibold">Progress</h2>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
             By-topic stats and mock history.
+          </p>
+        </Link>
+
+        <Link to="/glossary" className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-blue-400 transition">
+          <BookMarked className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          <h2 className="mt-3 font-semibold">Glossary</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Searchable list of every key term across the curriculum.
+          </p>
+        </Link>
+
+        <Link to="/cheatsheet" className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-blue-400 transition">
+          <Sparkles className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          <h2 className="mt-3 font-semibold">Cheat Sheet</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Exam blueprint, thresholds, and most-tested rules.
           </p>
         </Link>
       </section>
