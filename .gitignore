@@ -1,0 +1,30 @@
+node_modules
+dist
+dist-ssr
+
+# Generated PWA icons (built from public/icon.svg via scripts/generate-icons.mjs)
+public/icon-192.png
+public/icon-512.png
+public/favicon.ico
+.DS_Store
+*.local
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
