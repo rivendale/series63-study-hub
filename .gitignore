@@ -29,3 +29,5 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 tsconfig.tsbuildinfo
+
+package-lock.json
