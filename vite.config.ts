@@ -12,13 +12,12 @@ export default defineConfig({
       manifest: {
         name: 'Series 63 Study Hub',
         short_name: 'Series 63',
-        description:
-          'Free, open-source mobile-first study companion for the Series 63 exam.',
+        description: 'Free, open-source Series 63 exam prep',
         theme_color: '#2563eb',
-        background_color: '#f8fafc',
+        background_color: '#ffffff',
         display: 'standalone',
-        start_url: '/series63-study-hub/',
         scope: '/series63-study-hub/',
+        start_url: '/series63-study-hub/',
         icons: [
           { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -32,6 +31,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        navigateFallback: '/series63-study-hub/index.html',
+        navigateFallbackDenylist: [/^\/api/],
       },
     }),
   ],
