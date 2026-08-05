@@ -1,12 +1,32 @@
 import { useState } from 'react';
-import { Download, Trash2 } from 'lucide-react';
-import { useProgress } from '../hooks/useProgress';
+import { Download, Trash2, AlertTriangle, LifeBuoy } from 'lucide-react';
+import {
+  useProgress,
+  getRecoveryNotice,
+  getWriteStatus,
+  readQuarantinedRecord,
+  discardQuarantinedRecord,
+} from '../hooks/useProgress';
 import { overallStats, statsByTopic } from '../lib/stats';
 import ProgressBar from '../components/ProgressBar';
 import { examInfo } from '../data/examInfo';
 
 export default function ProgressPage() {
   const { progress, resetAll, exportJson } = useProgress();
+  // Read once on mount: both are decided during module load, before render.
+  const [recovery, setRecovery] = useState(() => getRecoveryNotice());
+  const writeStatus = getWriteStatus();
+
+  const downloadQuarantined = () => {
+    const raw = readQuarantinedRecord();
+    if (!raw) return;
+    const url = URL.createObjectURL(new Blob([raw], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `series63-unreadable-progress-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const overall = overallStats(progress);
   const stats = statsByTopic(progress);
   const [confirming, setConfirming] = useState(false);
@@ -85,6 +105,63 @@ export default function ProgressPage() {
 
       <section className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
         <h2 className="font-semibold mb-3">Data</h2>
+
+        {writeStatus === 'failing' && (
+          <div
+            role="alert"
+            className="mb-4 rounded-lg border border-red-300 dark:border-red-900/60 bg-red-50 dark:bg-red-950/40 p-3"
+          >
+            <p className="flex items-start gap-2 text-sm font-semibold text-red-900 dark:text-red-200">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              Progress is not being saved
+            </p>
+            <p className="mt-1 text-sm text-red-900/90 dark:text-red-200/90">
+              This browser refused to write to local storage, so anything you do
+              now will be lost when you close the tab. Export a copy, then free
+              up space or check whether the browser is blocking site data.
+            </p>
+          </div>
+        )}
+
+        {recovery && (
+          <div
+            role="alert"
+            className="mb-4 rounded-lg border border-amber-300 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 p-3"
+          >
+            <p className="flex items-start gap-2 text-sm font-semibold text-amber-900 dark:text-amber-200">
+              <LifeBuoy className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              An earlier progress record could not be read
+            </p>
+            <p className="mt-1 text-sm text-amber-900/90 dark:text-amber-200/90">
+              {recovery.reason === 'foreign-schema'
+                ? 'It was written in a format this version does not recognise'
+                : 'It was damaged, most likely by an interrupted save'}
+              {recovery.preserved
+                ? ', so it has been set aside rather than overwritten. Download it if you want to keep it — a future version may be able to read it.'
+                : '. A copy could not be set aside because storage is full, so download it now if you want to keep it.'}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={downloadQuarantined}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-semibold bg-amber-600 text-white hover:bg-amber-700 min-h-[44px]"
+              >
+                <Download className="w-4 h-4" aria-hidden="true" />
+                Download it
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  discardQuarantinedRecord();
+                  setRecovery(null);
+                }}
+                className="px-3 py-2 rounded-lg text-sm font-semibold bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 min-h-[44px]"
+              >
+                Discard
+              </button>
+            </div>
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row gap-3">
           <button type="button" onClick={download} className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 min-h-[44px]">
             <Download className="w-4 h-4" />
