@@ -65,6 +65,19 @@ Forwarding a third-party check **within 3 business days** does NOT constitute cu
 - **Quarterly statements** from the custodian to the client
 - **Form ADV / state notice** disclosure
 
+## Discretionary Authority — the IA exception
+
+Under **NASAA Model Rule 102(a)(4)-1** an investment adviser may begin exercising discretion on **oral** authority, provided it obtains **written** discretionary authority **within 10 business days after the date of the first transaction** placed under that oral authority.
+
+Get the direction right, because it is the most reliable trap in this area:
+
+| | Broker-dealer agent | Investment adviser |
+| --- | --- | --- |
+| Full discretion | Written DPOA **before** the first trade | Oral authority is enough to start; written within **10 business days of the first transaction** |
+| Time/price only | No written authorization needed | No written authorization needed |
+
+The 10 business days run from the **first transaction**, not from opening the account or from the conversation. Time or price discretion on a definite amount of a specified security is carved out of the requirement for both.
+
 ## Solicitor Rule
 
 Historically a separate rule; now absorbed into the SEC Marketing Rule (compliance Nov 4, 2022). A compensated promoter (solicitor) for an IA must:
@@ -95,9 +108,11 @@ Under IA Act §206, **negligence may be sufficient** for civil liability. Federa
       'Performance fees require qualified-client status — $1.4M AUM with IA OR $2.7M net worth excluding primary residence, effective June 29, 2026. Older material still shows $1.1M and $2.2M.',
       'IA Act §206 negligence may suffice for civil liability — unlike federal §10b-5 which requires scienter.',
       'Principal transactions need consent FOR EACH transaction, not blanket consent.',
+      'An IA may act on ORAL discretionary authority and has 10 business days from the FIRST TRANSACTION to obtain it in writing. A BD agent gets no such window and needs the written DPOA first. Carrying the agent rule over to the adviser is the classic wrong answer.',
     ],
     keyTerms: [
       { term: 'Fiduciary duty', definition: 'Duty of loyalty plus duty of care' },
+      { term: 'Oral discretionary authority (IA)', definition: 'An IA may begin on oral authority; written authorization is due within 10 business days of the first transaction. BD agents get no equivalent window.' },
       { term: 'Custody', definition: 'Holding client funds/securities or 3+ days holding period' },
       { term: 'Qualified client', definition: '$1.4M AUM with IA OR $2.7M net worth (ex. primary residence); raised from $1.1M/$2.2M on 6/29/2026' },
       { term: 'Agency cross', definition: 'Cross-trading both sides of a transaction' },

@@ -52,8 +52,10 @@ Radio and TV broadcasts and newspapers of general circulation are **not** consid
 When the Administrator takes adverse action (denial, suspension, revocation), the affected party:
 
 - Receives written notice of intended action
-- May request a hearing within **15 days**
+- May **request a hearing in writing** — once the Administrator receives that request, the matter is set down for hearing **within 15 days**
 - Receives written findings of fact and conclusions of law
+
+Note the direction of the 15 days. It is the Administrator's deadline to **set the matter down once asked**, not a countdown for the party to ask. The model act imposes no deadline on making the request.
 
 In emergencies, the Administrator may issue a **summary order** without a prior hearing — but a post-issuance hearing is required.
 

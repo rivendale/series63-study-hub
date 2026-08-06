@@ -62,7 +62,7 @@ Agent registration generally becomes effective **30 days after filing** if no pr
     pitfalls: [
       'A BD itself is NEVER an "agent." The term applies only to individuals.',
       'BD agents have NO de minimis exemption — only IARs of federal covered IAs do.',
-      'Discretionary trading without a written DPOA is unauthorized regardless of suitability or outcome.',
+      'For a BD agent, discretionary trading without a written DPOA already in hand is unauthorized regardless of suitability or outcome. An investment adviser is different — it may start on oral authority and has 10 business days from the first transaction to get it in writing.',
       'A new agent who accepts an order before her U4 is effective has violated the USA.',
       'Place of business in a state ALWAYS triggers registration, even with zero clients there.',
     ],

@@ -136,4 +136,18 @@ export const items: Question[] = [
     exp: 'IAR CE in adopting states: 12 credits annually, split 6 Products/Practice + 6 Ethics. Failing to complete renders the IAR "CE inactive" — they cannot do business until current.',
     difficulty: 'medium',
   },
+  {
+    id: 115,
+    topic: 'unethical-ia',
+    q: 'A client tells his investment adviser by phone to "manage the account as you see fit." The adviser places the first trade that afternoon. No written authorization has been signed. Under the NASAA model rule, the adviser:',
+    choices: [
+      'Has committed an unauthorized transaction, because written discretionary authority is always required before the first trade',
+      'May proceed on the oral authority, provided written discretionary authority is obtained within 10 business days after the date of that first transaction',
+      'May proceed indefinitely, because oral authorization is sufficient for an adviser',
+      'May proceed only if the trade turns out to be both suitable and profitable',
+    ],
+    answer: 1,
+    exp: 'NASAA Model Rule 102(a)(4)-1 lets an investment adviser begin exercising discretion on oral authority so long as written authorization follows within 10 business days after the date of the first transaction placed under it. Choice A is the broker-dealer rule — an agent must have the written DPOA in hand first — and carrying it over to an adviser is the trap. The window is not open-ended, which rules out C, and suitability or profitability never cures an authorization defect, which rules out D. Time or price discretion on a definite amount of a specified security is carved out of the requirement entirely.',
+    difficulty: 'hard',
+  },
 ];

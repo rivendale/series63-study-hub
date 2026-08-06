@@ -212,7 +212,7 @@ export const items: Question[] = [
       'Permitted if the client later ratifies the trade',
     ],
     answer: 2,
-    exp: 'Discretionary trading without a written DPOA is unauthorized, regardless of suitability or outcome. Subsequent ratification does not cure a violation that already occurred.',
+    exp: 'For a broker-dealer agent, discretionary trading without a written DPOA already in hand is unauthorized, regardless of suitability or outcome. Subsequent ratification does not cure a violation that already occurred. Note the scope: an investment adviser may begin on oral authority and has 10 business days from the first transaction to obtain written authorization, so the same facts come out differently for an IA.',
     difficulty: 'medium',
   },
   {

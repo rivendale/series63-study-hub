@@ -15,7 +15,9 @@ Excessive trading inconsistent with the customer's objectives, primarily to gene
 
 ### Unauthorized Transactions
 
-Discretionary trading without a written **discretionary power of attorney (DPOA)** is unauthorized — regardless of suitability or outcome.
+For a **broker-dealer agent**, discretionary trading without a written **discretionary power of attorney (DPOA)** already in hand is unauthorized — regardless of suitability or outcome.
+
+Scope this to the BD side. **Investment advisers get a limited oral-authority window that BD agents do not** — see the Unethical Practices (IA) chapter. Answering "written authorization is always required first" is right for an agent and wrong for an adviser, and the exam tests exactly that gap.
 
 ### Time / Price Discretion
 
@@ -96,7 +98,7 @@ Effecting **private securities transactions** outside the BD without:
 - Social media posts recommending securities are subject to firm supervision and recordkeeping
 - Promising specific returns without basis = potential fraud`,
     pitfalls: [
-      'A discretionary trade WITHOUT DPOA is unauthorized — even if it is suitable AND profitable.',
+      'For a BD agent, a discretionary trade WITHOUT a written DPOA is unauthorized — even if it is suitable AND profitable. Do not carry this to investment advisers, which get a 10-business-day oral-authority window.',
       'Borrowing from a friendly client without one of the three exceptions is prohibited regardless of disclosure.',
       'Sharing 50/50 with 25% capital contribution is NEVER allowed.',
       'Time/price discretion on a specific customer order does NOT need DPOA. Full discretion does.',

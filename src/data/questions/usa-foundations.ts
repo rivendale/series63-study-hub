@@ -60,10 +60,10 @@ export const items: Question[] = [
   {
     id: 5,
     topic: 'usa-foundations',
-    q: "Following an Administrator's notice of intent to deny a registration, the affected party must request a hearing within how many days?",
+    q: "An Administrator receives a registrant's written request for a hearing. Within how many days must the matter be set down for hearing?",
     choices: ['10 days', '15 days', '30 days', '60 days'],
     answer: 1,
-    exp: "Under the USA, a hearing must be requested within 15 days of notice of the Administrator's intended adverse action.",
+    exp: "The USA gives the Administrator 15 days from receipt of a written request to set the matter down for hearing. Read the direction carefully: the 15 days is the Administrator's deadline to schedule once asked, not a countdown for the party to ask — the model act sets no deadline for making the request at all. Some adopting states use a different period, so a fact pattern naming another figure is not necessarily wrong.",
     difficulty: 'easy',
   },
   {
