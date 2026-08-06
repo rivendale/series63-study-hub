@@ -27,10 +27,10 @@ Annual: brochure or summary of material changes within **120 days** of fiscal ye
 
 Prohibited unless the client is a **qualified client**:
 
-- **$1.1M AUM** with the IA, OR
-- **$2.2M net worth** excluding primary residence
+- **$1.4M AUM** with the IA, OR
+- **$2.7M net worth** excluding primary residence
 
-(Thresholds adjust periodically per SEC inflation indexing.)
+(Thresholds adjust periodically per SEC inflation indexing. These rose from **$1.1M / $2.2M** effective **June 29, 2026**, with contracts already in place grandfathered — older study material still shows the previous pair. Status is tested when the contract is entered into.)
 
 ## Agency Cross Transactions
 
@@ -92,14 +92,14 @@ Disclosure required.
 Under IA Act §206, **negligence may be sufficient** for civil liability. Federal §10b-5 requires scienter; §206 does not.`,
     pitfalls: [
       'Holding a client check made out to the IA = custody. Forwarding a third-party check within 3 days is NOT custody.',
-      'Performance fees require qualified-client status — $1.1M AUM with IA OR $2.2M net worth excluding primary residence.',
+      'Performance fees require qualified-client status — $1.4M AUM with IA OR $2.7M net worth excluding primary residence, effective June 29, 2026. Older material still shows $1.1M and $2.2M.',
       'IA Act §206 negligence may suffice for civil liability — unlike federal §10b-5 which requires scienter.',
       'Principal transactions need consent FOR EACH transaction, not blanket consent.',
     ],
     keyTerms: [
       { term: 'Fiduciary duty', definition: 'Duty of loyalty plus duty of care' },
       { term: 'Custody', definition: 'Holding client funds/securities or 3+ days holding period' },
-      { term: 'Qualified client', definition: '$1.1M AUM with IA OR $2.2M net worth (ex. primary residence)' },
+      { term: 'Qualified client', definition: '$1.4M AUM with IA OR $2.7M net worth (ex. primary residence); raised from $1.1M/$2.2M on 6/29/2026' },
       { term: 'Agency cross', definition: 'Cross-trading both sides of a transaction' },
       { term: 'Principal transaction', definition: 'IA selling from own inventory or buying for own account' },
     ],

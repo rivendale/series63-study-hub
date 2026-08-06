@@ -21,12 +21,12 @@ export const items: Question[] = [
     q: 'Performance fees are permitted only for clients who are:',
     choices: [
       'Accredited investors',
-      'Qualified clients ($1.1M AUM with the IA OR $2.2M net worth excluding primary residence)',
+      'Qualified clients ($1.4M AUM with the IA OR $2.7M net worth excluding primary residence)',
       'Federally registered IAs themselves',
       'Any client with a written agreement',
     ],
     answer: 1,
-    exp: 'Performance fees require qualified-client status. The thresholds adjust periodically per SEC inflation indexing.',
+    exp: 'Performance fees require qualified-client status — $1.4M under management with the IA or more than $2.7M net worth excluding the primary residence since June 29, 2026, up from $1.1M and $2.2M. The thresholds adjust periodically per SEC inflation indexing, and status is tested when the contract is entered into rather than monitored continuously. Accredited investor is a different and lower standard, so it is not enough on its own.',
     difficulty: 'medium',
   },
   {
