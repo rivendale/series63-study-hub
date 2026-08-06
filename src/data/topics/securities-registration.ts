@@ -21,9 +21,17 @@ Fastest method. Becomes effective at noon on the second business day after filin
 
 ### 2. Registration by Coordination
 
-For issues being registered concurrently under the federal **Securities Act of 1933**.
+For issues being registered concurrently under the federal **Securities Act of 1933**. Most common method for IPOs.
 
-Becomes effective **at the same moment** as the federal registration. Most common method for IPOs.
+Becomes effective **at the same moment** as the federal registration — but only if **three conditions** are all met:
+
+1. The registration statement has been **on file with the Administrator for at least 10 days**
+2. A statement of the **maximum and minimum proposed offering prices** and the **maximum underwriting discounts and commissions** has been on file for **two full business days**
+3. **No stop order** is in effect and no proceeding is pending
+
+Miss any one and state effectiveness does not ride along on the federal date, however clean the federal filing is. The point of the method is that the state deliberately **synchronizes** with the federal process instead of running its own clock — a syndicate prices on a single date and cannot wait for fifty separate state effectiveness dates.
+
+Adopting states may lengthen the filing period, so a fact pattern naming a different number is not necessarily wrong.
 
 ### 3. Registration by Qualification
 
@@ -61,12 +69,12 @@ The Administrator may require:
 The Administrator **cannot** base a denial solely on the offering being "speculative" if proper disclosure is made. Statutory grounds (fraud, misstatement, etc.) are required.`,
     pitfalls: [
       'Reg D Rule 504 is NOT federal covered — states retain full authority. Rule 506 IS federal covered.',
-      'Coordination becomes effective at the SAME moment as federal — not 30 days later.',
+      'Coordination becomes effective at the SAME moment as federal — not 30 days later. But simultaneity is conditional: 10 days on file with the Administrator, the pricing statement on file two full business days, and no stop order pending. A filing made four days before federal effectiveness does not go effective on the federal date.',
       'The Administrator cannot deny based solely on a "speculative" judgment if disclosure is adequate.',
     ],
     keyTerms: [
       { term: 'Notification', definition: 'Registration method for seasoned issuers' },
-      { term: 'Coordination', definition: "Registration concurrent with federal '33 Act" },
+      { term: 'Coordination', definition: "Registration concurrent with federal '33 Act; effective simultaneously with federal effectiveness if the statement has been on file 10 days, the pricing statement 2 full business days, and no stop order is pending" },
       { term: 'Qualification', definition: 'Registration for offerings without federal registration' },
       { term: 'Federal covered security', definition: 'Preempted from state registration by NSMIA' },
       { term: 'Notice filing', definition: 'Filing required by states for federal covered securities' },

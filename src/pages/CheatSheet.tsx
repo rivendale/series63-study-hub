@@ -51,7 +51,7 @@ const topRules: RuleRow[] = [
   { rule: 'Performance fees require qualified-client status ($1.4M AUM with IA OR $2.7M net worth excl. primary residence). Tested at contract inception, not monitored continuously.' },
   { rule: 'Custody is triggered by holding client check (any period) or 3+ days of third-party check.' },
   { rule: 'Reg D Rule 504 is NOT federal covered. Rule 506 IS.' },
-  { rule: 'Coordination becomes effective at the SAME moment as federal — not 30 days later.' },
+  { rule: 'Coordination becomes effective at the SAME moment as federal — not 30 days later — if 10 days on file, pricing statement on file 2 full business days, and no stop order pending.' },
   { rule: 'Lost profits are NOT recoverable in civil rescission.' },
   { rule: 'Conviction grounds: a felony OR securities-related misdemeanor within the past 10 years works under either model act. Past 10 years the acts split — the 1956 act cuts off both, the 2002 act keeps any felony with no time limit.' },
   { rule: 'Trustees of LIVING trusts are NOT court-appointed fiduciaries.' },

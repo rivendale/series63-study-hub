@@ -12,7 +12,7 @@ export const items: Question[] = [
       'When the Administrator orders it',
     ],
     answer: 2,
-    exp: 'Coordination is concurrent with the federal Securities Act of 1933 registration and becomes effective at the same moment.',
+    exp: 'Coordination is concurrent with the federal Securities Act of 1933 registration and becomes effective at the same moment — provided three model-act conditions hold: the registration statement has been on file with the Administrator at least 10 days, the maximum and minimum proposed offering prices and maximum underwriting discounts have been on file two full business days, and no stop order is in effect or proceeding pending. Fail any one and the state registration does not ride along on the federal date. Noon of the second business day is notification; an order of the Administrator is qualification.',
     difficulty: 'medium',
   },
   {
