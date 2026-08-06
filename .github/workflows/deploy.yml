@@ -37,3 +37,10 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # The action polls Pages for deployment_in_progress and aborts at its
+          # default 600000 ms. On 2026-08-06 Pages slowed enough that a deploy
+          # taking 8m09s succeeded and the next two hit the ceiling and failed,
+          # with a clean build and a healthy artifact both times. 30 minutes
+          # gives the platform room without leaving a job hanging all day.
+          timeout: 1800000
