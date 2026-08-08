@@ -71,4 +71,18 @@ export const items: Question[] = [
     exp: 'Exempt from registration ≠ exempt from anti-fraud. Anti-fraud applies to all securities and all persons regardless of registration status.',
     difficulty: 'easy',
   },
+  {
+    id: 270,
+    topic: 'exempt-securities',
+    q: 'Which of the following is an exempt SECURITY under the USA?',
+    choices: [
+      'Stock of a bank holding company',
+      'A security issued by a bank organised under the laws of the United States',
+      'Any security sold in an unsolicited transaction',
+      'Common stock of any company listed on a foreign exchange',
+    ],
+    answer: 1,
+    exp: 'Securities issued or guaranteed by a bank are exempt securities. Bank HOLDING COMPANY stock is the classic trap — a holding company is not a bank for this purpose. Note also that the unsolicited-trade answer describes an exempt TRANSACTION, which is a different category answering a different question.',
+    difficulty: 'medium',
+  },
 ];

@@ -75,4 +75,18 @@ export const items: Question[] = [
     exp: 'NSMIA preempted state registration of federal covered securities, but states may require notice filings and fees.',
     difficulty: 'medium',
   },
+  {
+    id: 272,
+    topic: 'securities-registration',
+    q: 'A registration statement for a securities offering may be filed by:',
+    choices: [
+      'The issuer only',
+      'The issuer, any other person on whose behalf the offering is made, or a registered broker-dealer',
+      'The Administrator, on the issuer’s behalf',
+      'Any purchaser of the securities',
+    ],
+    answer: 1,
+    exp: 'The act permits filing by the issuer, by any other person on whose behalf the offering is to be made, or by a registered broker-dealer — which is why a selling shareholder or an underwriter can register an offering. The Administrator receives filings rather than making them, and a purchaser has no role.',
+    difficulty: 'medium',
+  },
 ];

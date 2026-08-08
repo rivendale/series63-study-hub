@@ -56,4 +56,32 @@ export const items: Question[] = [
     exp: 'Commodity futures and forward contracts are CFTC-regulated and are NOT securities under the USA.',
     difficulty: 'medium',
   },
+  {
+    id: 268,
+    topic: 'security-definition',
+    q: 'Under the Howey test, an arrangement is an investment contract when there is an investment of money in a common enterprise with an expectation of profits derived:',
+    choices: [
+      'From the investor’s own management of the venture',
+      'Primarily from the efforts of others',
+      'Solely from the appreciation of real property',
+      'From a contractual guarantee by the promoter',
+    ],
+    answer: 1,
+    exp: 'The fourth Howey element is profits expected primarily from the efforts of others — it is what separates a passive investment from an active business the investor runs. This is the element that turns orange groves, whisky casks, condominium rental pools and countless novel arrangements into securities.',
+    difficulty: 'medium',
+  },
+  {
+    id: 269,
+    topic: 'security-definition',
+    q: 'An investor buys a condominium unit and signs the developer’s mandatory rental-pool agreement under which the developer manages the unit and pools the income. The interest is:',
+    choices: [
+      'Real estate, and outside the definition of a security',
+      'A security, because the rental pool makes profits depend on the efforts of others',
+      'A security only if the investor never occupies the unit',
+      'Real estate, because title to real property passed',
+    ],
+    answer: 1,
+    exp: 'The same condominium can fall on either side of the line. Bought for personal use it is real estate; bundled with a mandatory rental pool managed by the developer, it becomes an investment contract because the return now depends on someone else’s efforts. Holding legal title to real property does not settle the question.',
+    difficulty: 'hard',
+  },
 ];

@@ -80,4 +80,18 @@ export const items: Question[] = [
     exp: 'Transactions with institutional investors are exempt TRANSACTIONS — the exemption is based on who the buyer is, not what the security is.',
     difficulty: 'medium',
   },
+  {
+    id: 271,
+    topic: 'exempt-transactions',
+    q: 'An executor sells securities held in a decedent’s estate through a broker-dealer. The transaction is:',
+    choices: [
+      'An exempt transaction, as a sale by a court-appointed fiduciary',
+      'A non-exempt transaction requiring registration of the securities',
+      'Exempt only if the securities were themselves exempt securities',
+      'Exempt only if the estate is worth less than $1 million',
+    ],
+    answer: 0,
+    exp: 'Sales by executors, administrators, sheriffs, marshals, receivers, trustees in bankruptcy, guardians and conservators are exempt transactions. The rationale is that a fiduciary acting under court supervision is not the promoter the registration provisions were written to reach. A trustee under an ordinary inter vivos trust is NOT on that list.',
+    difficulty: 'medium',
+  },
 ];
