@@ -11,9 +11,11 @@ A static, client-side React + TypeScript PWA that serves as a study companion fo
 - **Exam structure (2026, NASAA):** 65 total questions = 60 scored + 5 unscored pretest, randomly distributed; 75 minutes; pass = 43 of 60 (72%). Use `examInfo.ts` constants — never hard-code these.
 - **NASAA category blueprint** (used by mock-exam sampling): BD/Agents 28 (47%), Remedies/Admin 21 (35%), Securities/Issuers 6 (10%), Investment Advisers/IARs 5 (8%). Defined in `src/data/categories.ts` (`OFFICIAL_CATEGORIES`, `TOPIC_TO_CATEGORY`).
 - **Curriculum** lives in `src/data/topics/<id>.ts` (one file per topic, 14 total). The index `src/data/curriculum.ts` imports and concatenates them.
-- **Questions** live in `src/data/questions/<id>.ts` (one file per topic, 14 total). The index `src/data/questions.ts` imports and concatenates them.
+- **Questions** live in `src/data/questions/<id>.ts` (one file per topic, 14 total; **272 questions**). The index `src/data/questions.ts` imports and concatenates them.
 - **Theme:** Tailwind, mobile-first, dark mode via `class` strategy, 44×44 px minimum tap targets.
 - **Routing:** HashRouter (required for GitHub Pages SPA without 404 config).
+- **Study modes:** topic drill, redo-missed (`/quiz/missed`), spaced-repetition review (`/quiz/review`), and the blueprint-weighted mock (`/quiz/mock`). All but the mock give immediate feedback.
+- **Scripts:** `npm run review:md` regenerates `REVIEW.md` and the README counts; `npm run rebalance:answers` flattens the answer-key distribution (`--dry` to preview).
 
 ## Repository conventions
 
@@ -46,6 +48,14 @@ Mix: ~25% easy / 60% medium / 15% hard. Include realistic distractors (common mi
 
 **Never copy questions from commercial prep providers (Kaplan, STC, Solomon, etc.) or actual exam content.** All questions must be original, written from publicly available USA model law and NASAA Statements of Policy.
 
+Typographic apostrophes (`’`, U+2019) are safe inside single-quoted TS strings and read better than the escaped ASCII form. Use them.
+
+#### Answer-key balance is a correctness property, not cosmetics
+
+Run `npm run rebalance:answers` after any sizeable batch. The bank was once **63% index 1**, which meant a student could beat chance by always picking the second choice — a habit the real exam punishes, and one that makes practice scores meaningless. The target is ~25% per position; `--dry` previews without writing.
+
+The script rotates choice order and moves the answer index with it, so no text changes. It **skips** questions whose order carries meaning and reports why: numeric choice sets (exams list figures ascending), roman-numeral groupings, self-referential choices, and explanations that name a position ("the first distractor"). If you add a question whose choices must stay in a given order, make sure it trips one of those guards — or the rebalancer will happily scramble it.
+
 ### Why per-topic files instead of monolithic data files?
 
 The original spec called for one big `curriculum.ts` and one big `questions.ts`. We refactored to per-topic modules because:
@@ -58,11 +68,9 @@ If you add a new topic, create both `src/data/topics/<id>.ts` and `src/data/ques
 
 ### Pushing to GitHub
 
-Use the `mcp__github__push_files` MCP tool. Each push call should keep total payload under ~30 KB to avoid stream timeouts. Rule of thumb:
+**Plain `git push` works from this clone.** Earlier sessions used the `mcp__github__push_files` MCP tool because SSH had no binary and HTTPS had no credentials; that is no longer the constraint, and ordinary git is preferable.
 
-- Single small file (config, page) — fine in one push
-- 3–4 small per-topic files (~3 KB each) — fine in one push
-- One large file (~50 KB) — split or refactor
+**Start every session with `git fetch && git reset --hard origin/main`.** MCP `push_files` commits server-side *without moving the local ref*, so any work done that way in the past left this clone silently behind `main`. On one occasion the remote held the better version of a file while local was stale, and pushing local would have reverted it. Diff against origin before committing rather than assuming the working tree is current.
 
 Don't commit `package-lock.json` (it's 360 KB and churns on every dependabot bump). The deploy workflow uses `npm install`, not `npm ci`, so a lockfile isn't required.
 
@@ -71,6 +79,38 @@ The CI deploy workflow (`.github/workflows/deploy.yml`) uses `actions/setup-node
 ### Branch strategy
 
 Develop on `claude/series63-study-hub-MHtTX`, push to `main` for the live site. The deploy workflow runs on every push to `main` and publishes `dist/` to GitHub Pages.
+
+### The content review manifest
+
+`src/data/reviewItems.ts` is the single source of truth for every passage flagged for professional review. Both the in-app `/review` page and `REVIEW.md` render from it, so they cannot drift apart. Regenerate the markdown with `npm run review:md`, which also refreshes the counts between the `review-counts` markers in `README.md`.
+
+An item is `open`, `confirmed` or `corrected`. **Open means uncertain, not wrong; corrected means it *was* wrong and has been fixed.** The `resolution` field records what changed and why — keep writing it, because the next person to reopen a question deserves to know what was already decided.
+
+`questionIds` is the field that earns the file its keep. When a rule changes, the chapter fix is the easy half; every question written from that rule has to change too. **A chapter fix that leaves the questions alone is worse than no fix, because the app then contradicts itself and the student cannot tell which half is right.** Validate the ids exist before trusting them — one entry once pointed at a question in the right chapter about an entirely different rule, and a topic-match check passed it.
+
+### Finding content errors: compare across files, not within them
+
+Every content error found in this repo was invisible to reading a file. The disqualification rule was stated backwards, the 15-day hearing clock ran the wrong way, the DPOA requirement was an unscoped absolute, and the private-placement limit counted buyers instead of offerees — and **every file involved was internally coherent.**
+
+The method that works: extract every assertion touching a given rule across all topics, all questions and the cheat sheet, then read them side by side. Contradictions live *between* files. A per-file review will not find them.
+
+When you do correct a rule, fix the chapter body, the `pitfalls`, the `keyTerms`, every question in `questionIds`, and the cheat sheet in the same pass. A half-applied correction leaves the app disagreeing with itself two lines apart, which happened here more than once.
+
+### Progress schema and spaced repetition
+
+`useProgress` persists to `localStorage` under `series63_progress` at `SCHEMA_VERSION = 1`. A record whose version does not match is **quarantined**, not overwritten — `load()` sets it aside under `series63_progress_unreadable` and the Progress page offers to download it. That path exists because the original code returned defaults on a version mismatch and the next save destroyed the original: opening the app was enough to lose a study history.
+
+**This makes schema changes consequential.** Adding spaced repetition needed two new per-answer fields, and they were added as **optional** (`box?`, `due?`) precisely so the version did not have to move. Bumping to 2 would have sent every existing progress file through the quarantine path — correct for a genuinely incompatible change, badly wrong for an additive one, and the user would have opened the app to a recovery banner and an apparently empty history.
+
+Rule of thumb: **additive → optional fields, no bump. Incompatible → bump, and write the migration before you do.**
+
+`src/lib/spacedRepetition.ts` holds the scheduler: five Leitner boxes at 1 / 3 / 7 / 16 / 35 days, correct promotes one box, wrong drops straight to box 1. Records without a `due` are treated as due, so pre-feature history flows into the queue instead of being stranded. Quiz sets are built from `getProgress()` — a deliberately **non-reactive** read — and frozen at mount, because a reactive read rebuilds the queue as answers are recorded and drops the question being worked on.
+
+### Verify by execution, not by reading
+
+The scheduler, the category weighting and the answer-key rotation were each checked by running them against fixtures rather than by inspection. That caught a real bug the code review missed: the first rotation pass scrambled an ascending money list because the numeric guard only matched bare numerals. The script reported success both times — only looking at the output revealed it.
+
+Pure logic in `src/lib/` is cheap to test this way: transpile with `esbuild`, import, assert. Worth doing for anything where a wrong answer looks plausible.
 
 ## Common gotchas
 
@@ -85,6 +125,8 @@ Develop on `claude/series63-study-hub-MHtTX`, push to `main` for the live site. 
 
 ```bash
 npm install
+npm run typecheck     # tsc --noEmit — fastest signal
+npm run lint          # eslint, --max-warnings 0
 npm run build         # tsc -b && vite build
 ```
 
@@ -97,7 +139,16 @@ A successful build produces:
 
 ## When in doubt
 
-- Section 7 of the original spec defined the question count target (174). Pass-3 spec raised it to ~300. Current bank is 114. Future contributions should grow the bank toward the target, weighted to the NASAA category blueprint (BD/Agents and Remedies/Admin first).
-- The `CheatSheet` page in `src/pages/CheatSheet.tsx` is the canonical source for exam thresholds and the most-tested rules. Keep it in sync with curriculum content.
-- Before committing rule changes, double-check the current law. Things like the qualified-client thresholds, commercial paper limits, and IAR CE adoption status drift over time. Update `DISCLAIMER.md` (when added) with the content revision date when material changes ship.
-- **Qualified client** is currently **$1.4M AUM with the IA or $2.7M net worth excluding the primary residence**, raised from $1.1M/$2.2M by SEC order effective **2026-06-29**, with existing contracts grandfathered. The SEC re-indexes Rule 205-3 about every five years — this repo carried the stale pair for roughly six weeks before it was caught, so re-check it before each content revision rather than trusting the number in this file.
+- **Bank size: 272 questions**, matching the NASAA blueprint within 1.1 points on every category (BD/Agents 46.7%, Remedies/Admin 35.3%, Securities/Issuers 9.9%, IAs/IARs 8.1%) and balanced at 25% per answer position. The v0.3 target of 250–300 is met. Further growth should preserve both properties — check with the analysis snippet in the git history or re-derive it, and re-run `npm run rebalance:answers`.
+- The `CheatSheet` page in `src/pages/CheatSheet.tsx` is the canonical source for exam thresholds and the most-tested rules. Keep it in sync with curriculum content — it has twice been the file left behind by a correction applied everywhere else.
+- Before committing rule changes, double-check the current law. Things like the qualified-client thresholds, commercial paper limits, and IAR CE adoption status drift over time.
+
+### Rules previously stated wrongly in this repo — do not reintroduce
+
+- **Qualified client** is **$1.4M AUM with the IA or $2.7M net worth excluding the primary residence**, raised from $1.1M/$2.2M by SEC order effective **2026-06-29**, with existing contracts grandfathered. The SEC re-indexes Rule 205-3 about every five years — this repo carried the stale pair for roughly six weeks, so re-check it before each content revision rather than trusting the number in this file.
+- **Statutory disqualification.** The app once had this inverted. The **1956 act** (§204(a)(2)(B)) reaches convictions within the past 10 years for qualifying misdemeanors *and* felonies alike; the **2002 act** (§412(d)(3)) reaches **any felony with no time limit** plus a qualifying misdemeanor within 10 years. Neither act says securities misdemeanors are unlimited. Safe ground under either: a conviction within the past 10 years.
+- **Civil statute of limitations.** The widely circulated "3 years from violation / 2 years from discovery" pairing matches **neither** model act. 1956: two years after the **contract of sale**. 2002: earlier of two years after discovery or **five** years after the violation. Criminal is separate again — five years.
+- **The 15-day hearing clock** is the Administrator's deadline to set a matter down **after receiving a written request**, not a countdown for the registrant to ask. The model act sets no deadline for making the request.
+- **Discretion.** A **BD agent** needs the written DPOA in hand first. An **investment adviser** may begin on oral authority with written authorisation due within **10 business days of the first transaction** (NASAA Model Rule 102(a)(4)-1). Stating the agent rule as an unscoped absolute is how this went wrong.
+- **Private placement** counts **offerees, not buyers** — an eleventh retail person merely *offered* the security breaks the exemption even if they never purchase.
+- **Registration by coordination** is simultaneous with federal effectiveness only if three conditions hold: statement on file 10 days, pricing statement on file 2 full business days, no stop order pending.
