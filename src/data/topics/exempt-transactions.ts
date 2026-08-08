@@ -25,7 +25,7 @@ Distinct from federal Reg D. Requires:
 - **No general solicitation or advertising**
 - **No commission** paid for non-institutional sales
 
-11+ non-institutional buyers blows the exemption.
+Note what is being counted. The model act exempts a transaction pursuant to an **offer directed to not more than ten persons** other than institutional investors, so the count is of **offerees, not buyers**. An eleventh retail person who is merely *offered* the security breaks the exemption **even if that person never buys**; ten offers producing ten sales are inside the limit. Offers to institutions are **unlimited** and never count.
 
 ### Pre-Organization Subscriptions
 
@@ -60,7 +60,7 @@ Between an issuer and underwriter, or between underwriters.
 Exempt transactions are exempt from securities registration and certain advertising/sales literature filings. They are **NOT exempt** from anti-fraud rules, agent/BD registration requirements, or suitability obligations.`,
     pitfalls: [
       'Trustees of living trusts are NOT court-appointed fiduciaries — exemption does not apply.',
-      '11 non-institutional buyers blows the state private placement exemption (limit is 10).',
+      'The state private placement limit counts OFFEREES, not buyers — an 11th non-institutional person who is merely offered the security blows the exemption even if they never purchase. Offers to institutions are unlimited.',
       'Wealthy individuals are NOT institutional investors.',
       'An exempt transaction does NOT exempt the agent or BD from registration.',
     ],

@@ -31,7 +31,8 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "review:md": "node scripts/generate-review.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.456.0",

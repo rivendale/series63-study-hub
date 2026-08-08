@@ -7,7 +7,7 @@ export const items: Question[] = [
     q: 'A state-level private placement under the USA requires which of the following?\n\nI. ≤ 10 non-institutional persons in 12 months\nII. No general solicitation or advertising\nIII. No commission paid for non-institutional sales\nIV. ≤ 35 accredited investors',
     choices: ['I and II only', 'I, II, and III', 'I, II, III, and IV', 'IV only'],
     answer: 1,
-    exp: 'State private placement: ≤10 non-institutional buyers in 12 months, no general solicitation, no commission for non-institutional sales. The 35-accredited-investor limit is from federal Reg D Rule 506(b), not the state private-placement exemption.',
+    exp: 'State private placement: an offer directed to no more than 10 non-institutional persons in 12 months, no general solicitation, no commission for non-institutional sales. Note that the model act counts OFFEREES rather than buyers — an 11th retail person who is merely offered the security breaks the exemption even if they never purchase, while offers to institutions are unlimited and never count. The 35-accredited-investor limit is from federal Reg D Rule 506(b), not the state private-placement exemption.',
     difficulty: 'hard',
   },
   {

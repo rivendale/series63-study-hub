@@ -1,5 +1,10 @@
+import { Link } from 'react-router-dom';
+import { ScrollText } from 'lucide-react';
 import { useProgress } from '../hooks/useProgress';
 import { examInfo } from '../data/examInfo';
+import { reviewItems } from '../data/reviewItems';
+
+const openReviewItems = reviewItems.filter((i) => i.status === 'open').length;
 
 export default function About() {
   const { progress, setPreferences } = useProgress();
@@ -32,6 +37,25 @@ export default function About() {
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+        <h2 className="font-semibold mb-2">Content review</h2>
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          The content is written from public sources and is internally consistent.{' '}
+          {reviewItems.length} passages are flagged anyway &mdash; places where sources
+          disagree, a figure drifts, a rule varies by adopting state, or a boundary is
+          easy to state too broadly. {openReviewItems} are still open. The list names
+          what the app asserts, why it was flagged and what to check, alongside the
+          questions that would change with the rule.
+        </p>
+        <Link
+          to="/review"
+          className="mt-3 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-semibold bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 hover:border-blue-400 min-h-[44px]"
+        >
+          <ScrollText className="w-4 h-4" aria-hidden="true" />
+          Open the review list
+        </Link>
       </section>
 
       <section className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 prose prose-slate dark:prose-invert max-w-none prose-headings:mt-0 prose-p:text-sm">
