@@ -24,6 +24,8 @@ export default function App() {
           <Route path="/topics" element={<Topics />} />
           <Route path="/quiz/topic/:id" element={<Quiz mode="topic" />} />
           <Route path="/quiz/mock" element={<Quiz mode="mock" />} />
+          <Route path="/quiz/missed" element={<Quiz mode="missed" />} />
+          <Route path="/quiz/review" element={<Quiz mode="review" />} />
           <Route path="/progress" element={<Progress />} />
           <Route path="/glossary" element={<Glossary />} />
           <Route path="/cheatsheet" element={<CheatSheet />} />

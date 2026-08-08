@@ -72,10 +72,28 @@ export default function Quiz({ mode }: Props) {
   }
 
   if (quiz.items.length === 0) {
+    // An empty missed or review queue is success, not an error, so say so
+    // rather than reusing the "no questions yet" copy written for a topic.
+    const empty =
+      mode === 'missed'
+        ? {
+            head: 'Nothing to redo',
+            body: 'You have no questions where your most recent answer was wrong. Get some wrong and they will collect here.',
+          }
+        : mode === 'review'
+          ? {
+              head: 'Nothing due',
+              body: 'Every question you have answered is still resting in its box. Check the Quiz tab to see when the next one comes back.',
+            }
+          : {
+              head: 'No questions yet',
+              body: 'No questions are available for this topic yet.',
+            };
     return (
-      <div className="text-center py-10">
-        <p className="text-slate-600 dark:text-slate-400">No questions available for this topic yet.</p>
-        <Link to="/topics" className="text-blue-600 underline mt-2 inline-block">Back to topics</Link>
+      <div className="text-center py-10 max-w-md mx-auto">
+        <p className="font-semibold">{empty.head}</p>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{empty.body}</p>
+        <Link to="/topics" className="text-blue-600 underline mt-3 inline-block">Back to quiz</Link>
       </div>
     );
   }
@@ -91,7 +109,13 @@ export default function Quiz({ mode }: Props) {
       <div className="max-w-2xl mx-auto space-y-5 py-2">
         <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 text-center">
           <p className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-            {mode === 'mock' ? 'Mock exam complete' : `${topic?.title}`}
+            {mode === 'mock'
+              ? 'Mock exam complete'
+              : mode === 'missed'
+                ? 'Redo complete'
+                : mode === 'review'
+                  ? 'Review complete'
+                  : `${topic?.title}`}
           </p>
           <div className="mt-2 text-5xl font-bold">{pct}%</div>
           <p className="mt-1 text-slate-600 dark:text-slate-400">{quiz.correctCount} correct of {quiz.items.length}</p>
@@ -143,6 +167,10 @@ export default function Quiz({ mode }: Props) {
   const current = quiz.current;
   const progressPct = ((quiz.index + (quiz.submitted ? 1 : 0)) / quiz.items.length) * 100;
 
+  // Everything except the timed mock reveals the answer as you go: topic
+  // drills, the missed-question redo, and the spaced-repetition review.
+  const immediateFeedback = mode !== 'mock';
+
   const minutes = Math.floor(remaining / 60000);
   const seconds = Math.floor((remaining % 60000) / 1000);
   const timeWarning = mode === 'mock' && remaining < 5 * 60 * 1000;
@@ -150,9 +178,9 @@ export default function Quiz({ mode }: Props) {
   return (
     <div className="max-w-2xl mx-auto space-y-4">
       <div className="flex items-center justify-between">
-        <Link to={mode === 'topic' ? '/topics' : '/'} className="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600">
+        <Link to={mode === 'mock' ? '/' : '/topics'} className="inline-flex items-center gap-1 text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600">
           <ArrowLeft className="w-4 h-4" />
-          {mode === 'topic' ? 'Topics' : 'Home'}
+          {mode === 'mock' ? 'Home' : 'Quiz'}
         </Link>
         {mode === 'mock' && (
           <span
@@ -177,12 +205,12 @@ export default function Quiz({ mode }: Props) {
         total={quiz.items.length}
         selected={quiz.selected}
         submitted={quiz.submitted}
-        showFeedback={mode === 'topic'}
+        showFeedback={immediateFeedback}
         onSelect={quiz.select}
       />
 
       <div className="flex justify-end">
-        {mode === 'topic' ? (
+        {immediateFeedback ? (
           quiz.submitted ? (
             <button type="button" onClick={quiz.next} className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 min-h-[44px]">
               {quiz.index >= quiz.items.length - 1 ? 'See score' : 'Next question'}

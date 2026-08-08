@@ -8,13 +8,24 @@ import {
   type OfficialCategoryId,
 } from '../data/categories';
 import { examInfo } from '../data/examInfo';
+import { getProgress } from './useProgress';
+import { selectDue, selectMissed } from '../lib/spacedRepetition';
 
-export type QuizMode = 'topic' | 'mock';
+export type QuizMode = 'topic' | 'mock' | 'missed' | 'review';
 
 export interface QuizConfig {
   mode: QuizMode;
   topicId?: string;
 }
+
+/**
+ * How many questions a review session serves at once.
+ *
+ * Left uncapped, a student returning after a fortnight is handed a hundred-odd
+ * questions and does none of them. A session that ends is a session that gets
+ * finished, and whatever is left stays due for the next one.
+ */
+export const REVIEW_SESSION_LIMIT = 25;
 
 export interface SessionAnswer {
   qid: number;
@@ -52,6 +63,14 @@ export function useQuiz(config: QuizConfig) {
   const initialQuestions = useMemo(() => {
     if (config.mode === 'topic' && config.topicId) {
       return shuffle(questions.filter((q) => q.topic === config.topicId));
+    }
+    if (config.mode === 'missed') {
+      // Oldest miss first, so the thing you have been getting wrong longest
+      // comes back first rather than last.
+      return selectMissed(getProgress(), questions).slice(0, REVIEW_SESSION_LIMIT);
+    }
+    if (config.mode === 'review') {
+      return selectDue(getProgress(), questions, Date.now()).slice(0, REVIEW_SESSION_LIMIT);
     }
     return buildMockSet();
   }, [config.mode, config.topicId]);

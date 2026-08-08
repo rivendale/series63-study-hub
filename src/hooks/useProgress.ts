@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { scheduleNext } from '../lib/spacedRepetition';
 
 const STORAGE_KEY = 'series63_progress';
 const SCHEMA_VERSION = 1 as const;
@@ -14,7 +15,19 @@ export interface MockAttempt {
 
 export interface Progress {
   schemaVersion: typeof SCHEMA_VERSION;
-  answers: Record<number, { correct: boolean; ts: number; selected?: number }>;
+  /**
+   * `box` and `due` drive spaced repetition and are OPTIONAL on purpose. They
+   * were added after the schema was already in the field, and making them
+   * required would have meant bumping schemaVersion — which sends every
+   * existing record through the unreadable-record quarantine path. That path is
+   * right for a genuinely incompatible change and wrong for an additive one, so
+   * records written before this feature simply arrive without them and are
+   * treated as due. See src/lib/spacedRepetition.ts.
+   */
+  answers: Record<
+    number,
+    { correct: boolean; ts: number; selected?: number; box?: number; due?: number }
+  >;
   topicsRead: Record<string, number>;
   mockAttempts: MockAttempt[];
   preferences: {
@@ -157,6 +170,17 @@ function setProgress(updater: (p: Progress) => Progress) {
   listeners.forEach((l) => l(current));
 }
 
+/**
+ * A non-reactive read of the current progress.
+ *
+ * Quiz sets are built once at mount and must not shift underneath the student:
+ * recording an answer changes `answers`, and a reactive read would rebuild the
+ * "missed" or "due" queue mid-session, dropping the question being worked on.
+ */
+export function getProgress(): Progress {
+  return current;
+}
+
 export function useProgress() {
   const [state, setState] = useState<Progress>(current);
 
@@ -169,13 +193,18 @@ export function useProgress() {
 
   const recordAnswer = useCallback(
     (qid: number, selected: number, correct: boolean) => {
-      setProgress((p) => ({
-        ...p,
-        answers: {
-          ...p.answers,
-          [qid]: { correct, ts: Date.now(), selected },
-        },
-      }));
+      setProgress((p) => {
+        const now = Date.now();
+        // Promote or demote from whatever box this question was already in.
+        const { box, due } = scheduleNext(p.answers[qid]?.box, correct, now);
+        return {
+          ...p,
+          answers: {
+            ...p.answers,
+            [qid]: { correct, ts: now, selected, box, due },
+          },
+        };
+      });
     },
     []
   );

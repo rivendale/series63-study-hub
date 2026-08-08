@@ -29,6 +29,8 @@ Each entry records what the app tells a student, why it was flagged, and the spe
 - **14-topic curriculum** covering the full NASAA outline plus 2022–2026 regulatory updates (Marketing Rule, SECURE 2.0, Reg BI, Form CRS, IAR CE, EVEP/MQP)
 - **272-question bank** with detailed explanations, weighted to the NASAA blueprint and balanced so each answer position holds 25% of the correct answers
 - **Topic quizzes** with immediate feedback after each question
+- **Redo missed** — drill only the questions whose most recent answer was wrong
+- **Spaced repetition** — a five-box Leitner schedule (1 / 3 / 7 / 16 / 35 days). A question moves up a box each time you answer it correctly and drops back to the first box when you do not, so review time goes where it is needed
 - **Mock exam** mirroring the real Prometric delivery: **65 questions (60 scored + 5 unscored pretest), 75 minutes, 72% pass mark (43 of 60)** — sampled in proportion to the official NASAA blueprint (47% BD/Agents, 35% Remedies/Admin, 10% Securities/Issuers, 8% IAs/IARs)
 - **Glossary** — searchable list of every key term across the curriculum
 - **Cheat Sheet** — exam blueprint, threshold table, and 20 most-tested rules
@@ -90,7 +92,7 @@ src/
 │   │                            # Progress, Glossary, CheatSheet, Review, About
 ├── components/                  # Layout, ProgressBar, TopicCard, QuestionCard
 ├── hooks/                       # useProgress (localStorage), useQuiz (state machine)
-└── lib/                         # shuffle, stats
+└── lib/                         # shuffle, stats, spacedRepetition
 ```
 
 The per-topic file structure (rather than monolithic data files) keeps any single file small enough to push via Git over slow / proxy-restricted connections, and lets contributors add a topic or a batch of questions in isolation.
@@ -100,7 +102,7 @@ The per-topic file structure (rather than monolithic data files) keeps any singl
 - [x] v0.1 — initial release: curriculum, questions, mock exam, PWA
 - [x] v0.2 — NASAA-blueprint mock exam (65/60/5), glossary, cheat sheet
 - [x] v0.3 — expand question bank to 250–300, add roman-numeral compound questions
-- [ ] v0.4 — "quiz only my missed questions" + lightweight spaced repetition
+- [x] v0.4 — "quiz only my missed questions" + lightweight spaced repetition
 - [ ] v0.5 — by-category progress (4 NASAA buckets) alongside by-topic
 - [ ] v1.0 — content reviewed by a licensed compliance professional
 
