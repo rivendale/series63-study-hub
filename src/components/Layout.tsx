@@ -1,6 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Home, BookOpen, Brain, BarChart3, Info } from 'lucide-react';
 import type { ReactNode } from 'react';
+import InstallPrompt from './InstallPrompt';
 
 interface Props {
   children: ReactNode;
@@ -50,6 +51,7 @@ export default function Layout({ children }: Props) {
       )}
 
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 md:px-6 py-4 md:py-6 pb-24 md:pb-10">
+        <InstallPrompt />
         {children}
       </main>
 

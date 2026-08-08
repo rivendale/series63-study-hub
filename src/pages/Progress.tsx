@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Download, Trash2, AlertTriangle, LifeBuoy } from 'lucide-react';
 import {
   useProgress,
@@ -10,6 +10,13 @@ import {
 import { overallStats, statsByCategory, statsByTopic, weightedReadiness } from '../lib/stats';
 import ProgressBar from '../components/ProgressBar';
 import { examInfo } from '../data/examInfo';
+import {
+  estimateUsage,
+  formatBytes,
+  isPersisted,
+  isStandalone,
+  type UsageEstimate,
+} from '../lib/storage';
 
 export default function ProgressPage() {
   const { progress, resetAll, exportJson } = useProgress();
@@ -31,6 +38,20 @@ export default function ProgressPage() {
   const stats = statsByTopic(progress);
   const categories = statsByCategory(progress);
   const readiness = weightedReadiness(progress);
+
+  // Durability state, read once on mount. null means the browser does not
+  // report it, which is a real answer and not the same as "not durable".
+  const [persisted, setPersisted] = useState<boolean | null>(null);
+  const [usage, setUsage] = useState<UsageEstimate | null>(null);
+  const installed = isStandalone();
+  useEffect(() => {
+    let alive = true;
+    void isPersisted().then((p) => alive && setPersisted(p));
+    void estimateUsage().then((u) => alive && setUsage(u));
+    return () => {
+      alive = false;
+    };
+  }, []);
   const [confirming, setConfirming] = useState(false);
 
   const download = () => {
@@ -177,6 +198,44 @@ export default function ProgressPage() {
 
       <section className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
         <h2 className="font-semibold mb-3">Data</h2>
+
+        <div className="mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 p-3">
+          <p className="text-sm font-medium">
+            {persisted === true
+              ? 'Your progress is stored durably on this device'
+              : persisted === false
+                ? 'Your progress is stored, but not marked durable'
+                : 'This browser does not report whether storage is durable'}
+          </p>
+          <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
+            {persisted === true ? (
+              <>
+                The browser has agreed not to clear it to reclaim space. It can still
+                be removed if you clear site data yourself.
+              </>
+            ) : persisted === false ? (
+              <>
+                Browsers may clear site data when a device runs short of space.{' '}
+                {installed
+                  ? 'The app is installed, which usually earns durability — it may be granted shortly.'
+                  : 'Installing to your home screen usually earns it, and keeps everything else the same.'}{' '}
+                Either way, exporting a copy now and then is the reliable answer.
+              </>
+            ) : (
+              <>
+                That is normal on some browsers and does not mean anything is wrong.
+                Export a copy now and then and nothing here is irreplaceable.
+              </>
+            )}
+            {usage && (
+              <>
+                {' '}
+                Using {formatBytes(usage.usedBytes)} of{' '}
+                {formatBytes(usage.quotaBytes)} available.
+              </>
+            )}
+          </p>
+        </div>
 
         {writeStatus === 'failing' && (
           <div
