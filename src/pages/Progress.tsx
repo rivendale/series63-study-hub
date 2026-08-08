@@ -7,7 +7,7 @@ import {
   readQuarantinedRecord,
   discardQuarantinedRecord,
 } from '../hooks/useProgress';
-import { overallStats, statsByTopic } from '../lib/stats';
+import { overallStats, statsByCategory, statsByTopic, weightedReadiness } from '../lib/stats';
 import ProgressBar from '../components/ProgressBar';
 import { examInfo } from '../data/examInfo';
 
@@ -29,6 +29,8 @@ export default function ProgressPage() {
   };
   const overall = overallStats(progress);
   const stats = statsByTopic(progress);
+  const categories = statsByCategory(progress);
+  const readiness = weightedReadiness(progress);
   const [confirming, setConfirming] = useState(false);
 
   const download = () => {
@@ -67,6 +69,76 @@ export default function ProgressPage() {
           </div>
         </div>
         <ProgressBar value={overall.pct} color={overall.pct >= 80 ? 'emerald' : overall.pct >= 60 ? 'blue' : overall.pct >= 40 ? 'amber' : 'red'} />
+      </section>
+
+      <section className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">
+        <div className="flex items-baseline justify-between gap-3 mb-1">
+          <h2 className="font-semibold">By NASAA category</h2>
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            {examInfo.scoredQuestions} scored questions
+          </span>
+        </div>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+          The exam is weighted, so a topic you have mastered may be worth six questions
+          while one you have skipped is worth twenty-eight. These are the four official
+          buckets and what each is actually worth.
+        </p>
+
+        <ul className="space-y-4">
+          {categories.map((c) => (
+            <li key={c.id}>
+              <div className="flex items-baseline justify-between gap-2 mb-1">
+                <span className="text-sm font-medium">{c.name}</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 flex-shrink-0">
+                  {c.weight}% &middot; {c.examQuestions} q
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <ProgressBar
+                    value={c.pct}
+                    color={c.pct >= 80 ? 'emerald' : c.pct >= 60 ? 'blue' : c.pct >= 40 ? 'amber' : 'red'}
+                  />
+                </div>
+                <span className="text-xs text-slate-500 dark:text-slate-400 w-28 text-right flex-shrink-0">
+                  {c.answered === 0 ? 'not started' : `${c.pct}% of ${c.answered} seen`}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+          {readiness.pct === null ? (
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Answer a few questions in each category to see a weighted estimate.
+            </p>
+          ) : (
+            <>
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm font-medium">Blueprint-weighted accuracy</span>
+                <span className="text-2xl font-bold">{readiness.pct}%</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">
+                  &asymp; {readiness.projectedScore} of {examInfo.scoredQuestions}
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Your accuracy in each category, weighted by what that category is worth
+                on the exam — not a raw average. Treat it as optimistic: practice
+                questions are untimed, may be ones you have seen before, and give
+                feedback as you go. Pass is {examInfo.passingScore} of {examInfo.scoredQuestions}.
+                {readiness.blindCategories.length > 0 && (
+                  <>
+                    {' '}
+                    It also cannot see{' '}
+                    {readiness.blindCategories.join(', ')} yet, so it is drawn from the
+                    rest.
+                  </>
+                )}
+              </p>
+            </>
+          )}
+        </div>
       </section>
 
       <section className="rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5">

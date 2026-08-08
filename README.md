@@ -35,7 +35,7 @@ Each entry records what the app tells a student, why it was flagged, and the spe
 - **Glossary** — searchable list of every key term across the curriculum
 - **Cheat Sheet** — exam blueprint, threshold table, and 20 most-tested rules
 - **Review list** — every passage flagged for professional review, with what is asserted, why it was flagged, and the questions that would change with the rule
-- **Progress tracking** — by-topic stats and full mock-exam history
+- **Progress tracking** — by-topic stats, by-NASAA-category progress with a blueprint-weighted readiness estimate, and full mock-exam history
 - **Mobile-first PWA** — install on iOS / Android home screen, offline support
 - **Dark mode** with system / light / dark toggle
 - **100% client-side** — no tracking, no accounts, no data leaves your device
@@ -103,7 +103,7 @@ The per-topic file structure (rather than monolithic data files) keeps any singl
 - [x] v0.2 — NASAA-blueprint mock exam (65/60/5), glossary, cheat sheet
 - [x] v0.3 — expand question bank to 250–300, add roman-numeral compound questions
 - [x] v0.4 — "quiz only my missed questions" + lightweight spaced repetition
-- [ ] v0.5 — by-category progress (4 NASAA buckets) alongside by-topic
+- [x] v0.5 — by-category progress (4 NASAA buckets) alongside by-topic
 - [ ] v1.0 — content reviewed by a licensed compliance professional
 
 Have ideas? Open an issue or PR.
