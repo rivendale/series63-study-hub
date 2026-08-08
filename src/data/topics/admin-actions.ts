@@ -64,12 +64,18 @@ For **willful** violations of the USA:
 
 ## Statute of Limitations
 
-Standard USA SOL:
+The two model acts set **different** civil periods, and a third pairing circulates in prep material without matching either. Learn the structure first, then the numbers:
 
-- **3 years** from the violation, OR
-- **2 years** from discovery
+| | Civil limitations period |
+| --- | --- |
+| **1956 act** (§410(e)) | **2 years after the contract of sale** |
+| **2002 act** (§509(j)) | the **earlier** of **2 years after discovery** of the facts constituting the violation or **5 years after the violation** |
 
-— whichever is **earlier**. Varies by state.
+Most states still operate under statutes based on the **1956 act**, so that is the figure to reach for absent a fact pattern pointing elsewhere. Be aware that some study material teaches **3 years from the violation or 2 years from discovery** — that pairing is a teaching convention rather than the text of either model act, so do not be thrown if your other materials show it.
+
+The durable point behind all three versions is the **structure**: a limitations period runs from the **earlier** of two triggers, one tied to the **conduct** and one tied to **discovery**, so a plaintiff cannot revive a stale claim merely by saying they only just found out.
+
+**Criminal** cases run on their own clock — the 1956 act bars an indictment or information more than **5 years** after the alleged violation. Do not carry the civil figure across to the criminal side.
 
 ## Cease-and-Desist Orders
 

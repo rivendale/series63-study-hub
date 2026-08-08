@@ -10,15 +10,15 @@ This file lists the places where internal consistency was not enough. Entries ar
 
 Each item states exactly what the app currently tells a student, why it was flagged, and the single specific thing to check. The intent is that a review is an hour or two of targeted checking rather than a re-read of the whole curriculum.
 
-**12 items — 6 open, 6 corrected — across 8 chapters and 12 questions.**
+**12 items — 0 open, 1 confirmed, 11 corrected — across 8 chapters and 13 questions.**
 
 | Category | Items | Open | What the category means |
 |---|---:|---:|---|
 | Sources disagree | 1 | 0 | Study material and primary sources give different answers. The app picked the better-supported one and says so, but it is worth confirming which is tested. |
 | Inflation-indexed figure | 1 | 0 | The figure changes over time. A stale number here is wrong rather than merely dated, so re-check it before each content revision. |
-| Varies by state | 3 | 3 | The Uniform Securities Act is model legislation and adopting states differ. The app states the model-act position and says that states vary. |
+| Varies by state | 3 | 0 | The Uniform Securities Act is model legislation and adopting states differ. The app states the model-act position and says that states vary. |
 | Reasonable advisors differ | 0 | 0 | There is no single correct answer, only a defensible one. Confirm the keyed answer matches how you would actually advise. |
-| Scope or nuance | 7 | 3 | The rule is right but its boundary is easy to state too broadly or too narrowly. |
+| Scope or nuance | 7 | 0 | The rule is right but its boundary is easy to state too broadly or too narrowly. |
 
 *Generated from [`src/data/reviewItems.ts`](src/data/reviewItems.ts) by `npm run review:md`. Edit that file, not this one — the in-app `/review` page renders the same data, so the two cannot disagree.*
 
@@ -36,9 +36,9 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 **Varies by state**
 
-- [ ] [Criminal penalty maximums](#criminal-penalties) — Administrative Actions and Penalties · Q46
-- [ ] [Civil statute of limitations](#statute-of-limitations) — Administrative Actions and Penalties · Q47
-- [ ] [IAR continuing education adoption status](#iar-ce-adoption) — Recent Regulatory Updates (2022–2026) · Q81, Q114
+- [x] [Criminal penalty maximums](#criminal-penalties) — Administrative Actions and Penalties · corrected, no action needed
+- [x] [Civil statute of limitations](#statute-of-limitations) — Administrative Actions and Penalties · corrected, no action needed
+- [x] [IAR continuing education adoption status](#iar-ce-adoption) — Recent Regulatory Updates (2022–2026) · corrected, no action needed
 
 **Scope or nuance**
 
@@ -46,9 +46,9 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 - [x] [Written DPOA stated as an unscoped absolute](#discretion-scope) — Unethical IA/IAR Practices · corrected, no action needed
 - [x] [Registration by coordination: the three conditions](#coordination-conditions) — Securities Registration · corrected, no action needed
 - [x] [Private placement limit counts offerees, not buyers](#private-placement-offerees) — Exempt Transactions · corrected, no action needed
-- [ ] [Recordkeeping retention periods given as ranges](#record-retention-periods) — Communications and Recordkeeping · chapter text only
-- [ ] [Brochure delivery: NASAA rule stated without the federal counterpart](#brochure-federal-state-split) — Investment Adviser Registration · Q64
-- [ ] [Exam Validity Extension Program specifics](#evep-details) — Recent Regulatory Updates (2022–2026) · chapter text only
+- [x] [Recordkeeping retention periods given as ranges](#record-retention-periods) — Communications and Recordkeeping · corrected, no action needed
+- [x] [Brochure delivery: NASAA rule stated without the federal counterpart](#brochure-federal-state-split) — Investment Adviser Registration · corrected, no action needed
+- [x] [Exam Validity Extension Program specifics](#evep-details) — Recent Regulatory Updates (2022–2026) · confirmed, no action needed
 
 ## Sources disagree
 
@@ -102,7 +102,7 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 ### Criminal penalty maximums
 
-**Status:** Open · **Item id:** `criminal-penalties`
+**Status:** Corrected · **Item id:** `criminal-penalties`
 
 **Chapter:** [Administrative Actions and Penalties](src/data/topics/admin-actions.ts) — topic id `admin-actions` · [read in the app](https://rivendale.github.io/series63-study-hub/#/curriculum/admin-actions)
 
@@ -114,11 +114,13 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 **Questions that change with it.** 46 in [`src/data/questions/admin-actions.ts`](src/data/questions/admin-actions.ts)
 
+**Resolution.** The \$5,000 and 3-year figures are correct as model-act maximums, so the chapter was right and only the framing needed work. The cheat sheet row now carries 'model-act maximums; adopting states set their own' rather than stating the pair flat, and question 46's explanation says the same. Added the point the chapter had buried, that no criminal liability attaches where the person had no knowledge of the rule or order violated - that is a genuine element rather than a footnote.
+
 <a id="statute-of-limitations"></a>
 
 ### Civil statute of limitations
 
-**Status:** Open · **Item id:** `statute-of-limitations`
+**Status:** Corrected · **Item id:** `statute-of-limitations`
 
 **Chapter:** [Administrative Actions and Penalties](src/data/topics/admin-actions.ts) — topic id `admin-actions` · [read in the app](https://rivendale.github.io/series63-study-hub/#/curriculum/admin-actions)
 
@@ -130,11 +132,13 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 **Questions that change with it.** 47 in [`src/data/questions/admin-actions.ts`](src/data/questions/admin-actions.ts)
 
+**Resolution.** This turned out to be more than a presentation question: the app's '3 years from violation OR 2 years from discovery' matches NEITHER model act. The 1956 act (410(e)) uses a single trigger - two years after the CONTRACT OF SALE. The 2002 act (509(j)) uses the earlier of two years after discovery or five years after the violation. The 3/2 pairing circulates widely in study material as a teaching convention with no statutory basis. The chapter now gives both acts in a table, notes that most states still operate under 1956-based statutes so that is the figure to reach for absent a contrary fact pattern, warns that the 3/2 version will show up in other materials, and states the durable structure - a period running from the earlier of a conduct trigger and a discovery trigger, so a plaintiff cannot revive a stale claim by pleading late discovery. Question 47 was rebuilt to name the 2002 act explicitly and key its actual pair, with the old 3/2 hybrid demoted to a distractor; its key moved from index 1 to 0. Also added the criminal limitations period (no indictment more than five years after the alleged violation), which the app had not covered at all, and a cheat sheet row for it.
+
 <a id="iar-ce-adoption"></a>
 
 ### IAR continuing education adoption status
 
-**Status:** Open · **Item id:** `iar-ce-adoption`
+**Status:** Corrected · **Item id:** `iar-ce-adoption`
 
 **Chapter:** [Recent Regulatory Updates (2022–2026)](src/data/topics/recent-updates.ts) — topic id `recent-updates` · [read in the app](https://rivendale.github.io/series63-study-hub/#/curriculum/recent-updates)
 
@@ -145,6 +149,8 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 **To verify.** Confirm the current adoption count and whether the exam expects a candidate to know their own state status.
 
 **Questions that change with it.** 81 in [`src/data/questions/unethical-ia.ts`](src/data/questions/unethical-ia.ts); 114 in [`src/data/questions/recent-updates.ts`](src/data/questions/recent-updates.ts)
+
+**Resolution.** Verified: roughly two dozen jurisdictions had adopted by early 2026, with adoption beginning in 2023 and continuing every year since. The 12 credit / 6 Products and Practice / 6 Ethics split is stable and remains the tested fact. The chapter now says exactly that - credit split is the fact to learn, adoption count is a moving number to check against your own state - and makes the practical consequence explicit, that an IAR registered only in a non-adopting state has no IAR CE obligation at all though a single rulemaking can change that. Deliberately phrased as 'roughly two dozen' rather than a hard count, since the number goes stale within months and a wrong count is worse than an approximate one.
 
 ## Scope or nuance
 
@@ -226,7 +232,7 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 ### Recordkeeping retention periods given as ranges
 
-**Status:** Open · **Item id:** `record-retention-periods`
+**Status:** Corrected · **Item id:** `record-retention-periods`
 
 **Chapter:** [Communications and Recordkeeping](src/data/topics/communications.ts) — topic id `communications` · [read in the app](https://rivendale.github.io/series63-study-hub/#/curriculum/communications)
 
@@ -236,13 +242,15 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 **To verify.** Decide whether to split the rows by record type and state a single period for each, or keep the ranges and say explicitly that the period depends on the record.
 
-**Questions that change with it.** None — this one is chapter text only.
+**Questions that change with it.** 100 in [`src/data/questions/security-definition.ts`](src/data/questions/security-definition.ts)
+
+**Resolution.** The ranges were hiding two different regimes behind one table. Split them. Broker-dealers under SEC Rule 17a-4: six years for blotters, general ledgers, position records and customer account information; three years for correspondence, confirmations and most operational records; life of the firm plus three for organizational documents - with the first two years easily accessible throughout. Investment advisers under Advisers Act Rule 204-2 and the parallel NASAA model rule: a flat five years with the first two in an appropriate office of the adviser. The chapter now states the discriminator plainly, that five is the adviser number while three or six is the broker-dealer number, and question 100's explanation carries the same contrast rather than the previous vague 'life + 6'.
 
 <a id="brochure-federal-state-split"></a>
 
 ### Brochure delivery: NASAA rule stated without the federal counterpart
 
-**Status:** Open · **Item id:** `brochure-federal-state-split`
+**Status:** Corrected · **Item id:** `brochure-federal-state-split`
 
 **Chapter:** [Investment Adviser Registration](src/data/topics/ia-registration.ts) — topic id `ia-registration` · [read in the app](https://rivendale.github.io/series63-study-hub/#/curriculum/ia-registration)
 
@@ -252,13 +260,15 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 **To verify.** Decide whether the Series 63 scope warrants naming the federal rule alongside the state one.
 
-**Questions that change with it.** 64 in [`src/data/questions/ia-registration.ts`](src/data/questions/ia-registration.ts)
+**Questions that change with it.** 68 in [`src/data/questions/ia-registration.ts`](src/data/questions/ia-registration.ts)
+
+**Resolution.** Worth stating, because the omission was the kind that produces a confidently wrong answer rather than a blank. The 48-hour / 5-day pairing is the NASAA model rule for STATE-REGISTERED advisers and remains the Series 63 answer. The federal rule under Advisers Act Rule 204-3, governing an SEC-registered federal covered adviser, was amended in 2010 to require delivery before or at the time of entering into the contract with no rescission right at all; the annual 120-day obligation applies under both. Added to the chapter and to question 68 with the tell spelled out - a stem naming a federal covered adviser is not asking for the 48 hours. Note this item originally pointed at question 64, which is about wrap-fee special compensation and has nothing to do with brochures; the pointer has been corrected to 68.
 
 <a id="evep-details"></a>
 
 ### Exam Validity Extension Program specifics
 
-**Status:** Open · **Item id:** `evep-details`
+**Status:** Confirmed · **Item id:** `evep-details`
 
 **Chapter:** [Recent Regulatory Updates (2022–2026)](src/data/topics/recent-updates.ts) — topic id `recent-updates` · [read in the app](https://rivendale.github.io/series63-study-hub/#/curriculum/recent-updates)
 
@@ -269,6 +279,8 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 **To verify.** Confirm the fee and the enrollment conditions currently, and decide whether the fee is worth stating at all given how it drifts.
 
 **Questions that change with it.** None — this one is chapter text only.
+
+**Resolution.** Every figure verified and all correct: \$35 annually per program, so \$70 for someone opting into both AG and IAR EVEP; at least one year of registration in the terminated category immediately before termination; election within two years of termination; and enrolment in good standing in FINRA's Maintaining Qualifications Program, which carries its own \$100 annual fee. The concern that an administrative fee would quietly drift is reasonable in principle but has not materialised here, and the figure is cheap to re-check. Left stated rather than removed. No content change.
 
 ## Feeding corrections back
 
@@ -300,7 +312,7 @@ Do not edit `REVIEW.md` by hand — the next regeneration discards it, and the i
 
 ### Every affected question, in one place
 
-12 questions across the whole list. If a question appears against two items, both rules have to be settled before it is safe to touch.
+13 questions across the whole list. If a question appears against two items, both rules have to be settled before it is safe to touch.
 
 | Question | Module | Item |
 |---:|---|---|
@@ -309,10 +321,11 @@ Do not edit `REVIEW.md` by hand — the next regeneration discards it, and the i
 | 47 | [`src/data/questions/admin-actions.ts`](src/data/questions/admin-actions.ts) | [Civil statute of limitations](#statute-of-limitations) |
 | 48 | [`src/data/questions/admin-actions.ts`](src/data/questions/admin-actions.ts) | [Statutory disqualification: felony and misdemeanor lookback](#felony-window) |
 | 49 | [`src/data/questions/admin-actions.ts`](src/data/questions/admin-actions.ts) | [Statutory disqualification: felony and misdemeanor lookback](#felony-window) |
-| 64 | [`src/data/questions/ia-registration.ts`](src/data/questions/ia-registration.ts) | [Brochure delivery: NASAA rule stated without the federal counterpart](#brochure-federal-state-split) |
+| 68 | [`src/data/questions/ia-registration.ts`](src/data/questions/ia-registration.ts) | [Brochure delivery: NASAA rule stated without the federal counterpart](#brochure-federal-state-split) |
 | 73 | [`src/data/questions/unethical-ia.ts`](src/data/questions/unethical-ia.ts) | [Qualified client thresholds](#qualified-client) |
 | 81 | [`src/data/questions/unethical-ia.ts`](src/data/questions/unethical-ia.ts) | [IAR continuing education adoption status](#iar-ce-adoption) |
 | 82 | [`src/data/questions/securities-registration.ts`](src/data/questions/securities-registration.ts) | [Registration by coordination: the three conditions](#coordination-conditions) |
 | 93 | [`src/data/questions/exempt-transactions.ts`](src/data/questions/exempt-transactions.ts) | [Private placement limit counts offerees, not buyers](#private-placement-offerees) |
+| 100 | [`src/data/questions/security-definition.ts`](src/data/questions/security-definition.ts) | [Recordkeeping retention periods given as ranges](#record-retention-periods) |
 | 114 | [`src/data/questions/recent-updates.ts`](src/data/questions/recent-updates.ts) | [IAR continuing education adoption status](#iar-ce-adoption) |
 | 115 | [`src/data/questions/unethical-ia.ts`](src/data/questions/unethical-ia.ts) | [Written DPOA stated as an unscoped absolute](#discretion-scope) |

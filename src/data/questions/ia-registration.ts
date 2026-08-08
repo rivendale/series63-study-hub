@@ -100,7 +100,7 @@ export const items: Question[] = [
       'Only upon client request',
     ],
     answer: 1,
-    exp: 'The brochure rule: deliver 48+ hours before contract OR at signing if the client has a 5-day right to rescind without penalty. Annual delivery is within 120 days of fiscal year end.',
+    exp: 'The NASAA model brochure rule, which applies to STATE-REGISTERED advisers and is the Series 63 answer: deliver 48+ hours before the contract, or at signing if the client has a 5-day right to rescind without penalty. Annual delivery is within 120 days of fiscal year end. Watch the regime, because the federal rule differs — Advisers Act Rule 204-3, governing an SEC-registered federal covered adviser, was amended in 2010 and requires delivery before or at the time of entering into the contract with no rescission right at all. A stem naming a federal covered adviser is not asking for the 48 hours.',
     difficulty: 'medium',
   },
   {

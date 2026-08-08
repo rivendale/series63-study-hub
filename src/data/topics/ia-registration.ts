@@ -80,7 +80,9 @@ The IA must deliver Form ADV Part 2A to clients:
 - **48+ hours** before contract, OR
 - **At signing** if client has a **5-day rescission right**
 
-Annual: brochure (or summary of material changes) within **120 days** of fiscal year end.`,
+Annual: brochure (or summary of material changes) within **120 days** of fiscal year end.
+
+**Know which regime the fact pattern is in.** The 48-hour / 5-day pairing is the **NASAA model rule**, applied to **state-registered** advisers, and it is the Series 63 answer. The **federal** rule under **Advisers Act Rule 204-3**, which governs an **SEC-registered (federal covered)** adviser, was amended in 2010 and simply requires delivery **before or at the time of entering into the contract** — with **no rescission right** at all. The annual 120-day obligation applies under both. A question naming a federal covered adviser is not asking for the 48 hours.`,
     pitfalls: [
       'Bank holding companies are NOT excluded. Only banks are.',
       'A CPA charging a separate fee for investment advice IS an IA, regardless of CPA license.',

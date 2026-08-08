@@ -87,6 +87,8 @@ NASAA's IAR CE Model Rule:
 - Total: **12 credits annually**
 - Failing to complete = registration becomes "CE inactive" — IAR cannot do business until current
 
+The **12 / 6 + 6** split is stable; what moves is **who has adopted it**. Adoption began in 2023 and has grown every year since, reaching roughly **two dozen jurisdictions by early 2026** and still climbing. Treat the credit split as the tested fact and the adoption count as a moving number to check against your own state rather than memorise — an IAR registered only in a non-adopting state has no IAR CE obligation at all, though that can change with a single rulemaking.
+
 ## AG EVEP and IAR EVEP (Exam Validity Extension)
 
 Extends exam validity to **up to 5 years** (vs. standard 2) when a person terminates registration but stays current via annual CE.

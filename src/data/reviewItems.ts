@@ -175,7 +175,7 @@ export const reviewItems: ReviewItem[] = [
     topic: 'admin-actions',
     title: 'Criminal penalty maximums',
     category: 'state-variation',
-    status: 'open',
+    status: 'corrected',
     asserted:
       'Up to a $5,000 fine and/or 3 years imprisonment per willful violation, described in the chapter as the USA figure.',
     concern:
@@ -183,13 +183,15 @@ export const reviewItems: ReviewItem[] = [
     verify:
       'Confirm the exam tests the model-act figures rather than a state variation, and decide whether the cheat sheet row should carry the qualifier.',
     questionIds: [46],
+    resolution:
+      'The $5,000 and 3-year figures are correct as model-act maximums, so the chapter was right and only the framing needed work. The cheat sheet row now carries \'model-act maximums; adopting states set their own\' rather than stating the pair flat, and question 46\'s explanation says the same. Added the point the chapter had buried, that no criminal liability attaches where the person had no knowledge of the rule or order violated - that is a genuine element rather than a footnote.',
   },
   {
     id: 'statute-of-limitations',
     topic: 'admin-actions',
     title: 'Civil statute of limitations',
     category: 'state-variation',
-    status: 'open',
+    status: 'corrected',
     asserted:
       'The earlier of 3 years from the violation or 2 years from discovery, with the chapter noting that it varies by state.',
     concern:
@@ -197,13 +199,15 @@ export const reviewItems: ReviewItem[] = [
     verify:
       'Confirm the civil pair is the tested formulation, and whether the criminal statute of limitations is worth adding.',
     questionIds: [47],
+    resolution:
+      'This turned out to be more than a presentation question: the app\'s \'3 years from violation OR 2 years from discovery\' matches NEITHER model act. The 1956 act (410(e)) uses a single trigger - two years after the CONTRACT OF SALE. The 2002 act (509(j)) uses the earlier of two years after discovery or five years after the violation. The 3/2 pairing circulates widely in study material as a teaching convention with no statutory basis. The chapter now gives both acts in a table, notes that most states still operate under 1956-based statutes so that is the figure to reach for absent a contrary fact pattern, warns that the 3/2 version will show up in other materials, and states the durable structure - a period running from the earlier of a conduct trigger and a discovery trigger, so a plaintiff cannot revive a stale claim by pleading late discovery. Question 47 was rebuilt to name the 2002 act explicitly and key its actual pair, with the old 3/2 hybrid demoted to a distractor; its key moved from index 1 to 0. Also added the criminal limitations period (no indictment more than five years after the alleged violation), which the app had not covered at all, and a cheat sheet row for it.',
   },
   {
     id: 'iar-ce-adoption',
     topic: 'recent-updates',
     title: 'IAR continuing education adoption status',
     category: 'state-variation',
-    status: 'open',
+    status: 'corrected',
     asserted:
       '12 credits annually — 6 Products and Practice plus 6 Ethics — mandatory in adopting states, with non-compliance rendering the IAR "CE inactive".',
     concern:
@@ -211,6 +215,8 @@ export const reviewItems: ReviewItem[] = [
     verify:
       'Confirm the current adoption count and whether the exam expects a candidate to know their own state status.',
     questionIds: [81, 114],
+    resolution:
+      'Verified: roughly two dozen jurisdictions had adopted by early 2026, with adoption beginning in 2023 and continuing every year since. The 12 credit / 6 Products and Practice / 6 Ethics split is stable and remains the tested fact. The chapter now says exactly that - credit split is the fact to learn, adoption count is a moving number to check against your own state - and makes the practical consequence explicit, that an IAR registered only in a non-adopting state has no IAR CE obligation at all though a single rulemaking can change that. Deliberately phrased as \'roughly two dozen\' rather than a hard count, since the number goes stale within months and a wrong count is worse than an approximate one.',
   },
 
   /* ---------------------------------------------------------------- */
@@ -221,40 +227,47 @@ export const reviewItems: ReviewItem[] = [
     topic: 'communications',
     title: 'Recordkeeping retention periods given as ranges',
     category: 'scope-nuance',
-    status: 'open',
+    status: 'corrected',
     asserted:
       'A table giving BD order tickets as 3–6 years and communications as 3–5 years, against a flat 5 years for IA records, with prose adding "first 2 in office".',
     concern:
       'The ranges collapse several different record types into one row, so a student cannot tell which record carries which period. The IA row also omits the accessible-location condition that the prose mentions, so the table and the text disagree in emphasis.',
     verify:
       'Decide whether to split the rows by record type and state a single period for each, or keep the ranges and say explicitly that the period depends on the record.',
+    questionIds: [100],
+    resolution:
+      'The ranges were hiding two different regimes behind one table. Split them. Broker-dealers under SEC Rule 17a-4: six years for blotters, general ledgers, position records and customer account information; three years for correspondence, confirmations and most operational records; life of the firm plus three for organizational documents - with the first two years easily accessible throughout. Investment advisers under Advisers Act Rule 204-2 and the parallel NASAA model rule: a flat five years with the first two in an appropriate office of the adviser. The chapter now states the discriminator plainly, that five is the adviser number while three or six is the broker-dealer number, and question 100\'s explanation carries the same contrast rather than the previous vague \'life + 6\'.',
   },
   {
     id: 'brochure-federal-state-split',
     topic: 'ia-registration',
     title: 'Brochure delivery: NASAA rule stated without the federal counterpart',
     category: 'scope-nuance',
-    status: 'open',
+    status: 'corrected',
     asserted:
       '48+ hours before the contract, or at signing with a 5-business-day right to rescind; annual delivery within 120 days of fiscal year end.',
     concern:
       'This is the NASAA model rule for state-registered advisers. The federal rule for an SEC-registered adviser requires delivery at or before entry into the contract with no rescission right, and the app does not mention it. Defensible for a state-law exam, but a federal covered fact pattern would catch a student out.',
     verify:
       'Decide whether the Series 63 scope warrants naming the federal rule alongside the state one.',
-    questionIds: [64],
+    questionIds: [68],
+    resolution:
+      'Worth stating, because the omission was the kind that produces a confidently wrong answer rather than a blank. The 48-hour / 5-day pairing is the NASAA model rule for STATE-REGISTERED advisers and remains the Series 63 answer. The federal rule under Advisers Act Rule 204-3, governing an SEC-registered federal covered adviser, was amended in 2010 to require delivery before or at the time of entering into the contract with no rescission right at all; the annual 120-day obligation applies under both. Added to the chapter and to question 68 with the tell spelled out - a stem naming a federal covered adviser is not asking for the 48 hours. Note this item originally pointed at question 64, which is about wrap-fee special compensation and has nothing to do with brochures; the pointer has been corrected to 68.',
   },
   {
     id: 'evep-details',
     topic: 'recent-updates',
     title: 'Exam Validity Extension Program specifics',
     category: 'scope-nuance',
-    status: 'open',
+    status: 'confirmed',
     asserted:
       'Eligibility requires at least 1 year of registration before termination, opt-in within 2 years, FINRA MQP enrollment for AG EVEP, and a $35 annual fee per program.',
     concern:
       'Program mechanics and fees are administrative details that change without any change in law, and a dollar figure of this kind is the sort of thing that quietly goes stale.',
     verify:
       'Confirm the fee and the enrollment conditions currently, and decide whether the fee is worth stating at all given how it drifts.',
+    resolution:
+      'Every figure verified and all correct: $35 annually per program, so $70 for someone opting into both AG and IAR EVEP; at least one year of registration in the terminated category immediately before termination; election within two years of termination; and enrolment in good standing in FINRA\'s Maintaining Qualifications Program, which carries its own $100 annual fee. The concern that an administrative fee would quietly drift is reasonable in principle but has not materialised here, and the figure is cheap to re-check. Left stated rather than removed. No content change.',
   },
 ];
 

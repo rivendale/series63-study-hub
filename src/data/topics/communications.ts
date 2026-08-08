@@ -54,14 +54,20 @@ A LinkedIn post recommending a specific stock is a recommendation subject to all
 
 ## Recordkeeping Periods
 
-| Record | BD | IA |
-|--------|----|----|
-| Customer account records | Life of account + 6 years | 5 years |
-| Order tickets | 3-6 years | 5 years |
-| Communications (email, etc.) | 3-5 years | 5 years |
-| Form ADV / brochures | N/A | Permanent |
+The two regimes work differently, so learn them separately rather than as one table of ranges.
 
-IAs typically keep records 5 years (first 2 in office). Customer account records often life + 6.
+**Broker-dealers — SEC Rule 17a-4.** The period depends on the record, and the split is **six years or three**, with the **first two years easily accessible** either way:
+
+| Record | Period |
+|--------|--------|
+| Blotters, general ledgers, position records | **6 years** |
+| Customer account record information | **6 years** after the later of account closing or the last update |
+| Correspondence, confirmations, most operational records | **3 years** |
+| Articles, partnership agreements, minute books | **Life of the firm plus 3 years** |
+
+**Investment advisers — Advisers Act Rule 204-2 and the parallel NASAA model rule.** A flat **5 years** for records generally, with the **first 2 years in an appropriate office** of the adviser. Advisory **performance advertising support** and certain organizational records run longer, and **Form ADV and brochures** are effectively kept for the life of the firm.
+
+The distinction candidates lose marks on is which regime applies: **5 years is the adviser number, 3 or 6 is the broker-dealer number**, and "first two years accessible" attaches to both.
 
 ## Personal Email
 

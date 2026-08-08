@@ -54,7 +54,7 @@ export const items: Question[] = [
       'Permanent for everything',
     ],
     answer: 1,
-    exp: 'IAs generally keep records 5 years (first 2 in office). BD customer account records are typically life + 6 years. Form ADV/brochures are kept permanently.',
+    exp: 'Under Advisers Act Rule 204-2 and the parallel NASAA model rule, an adviser keeps records five years generally, with the first two in an appropriate office of the adviser. Do not carry the broker-dealer numbers across: under SEC Rule 17a-4 a BD keeps blotters, general ledgers, position records and customer account information six years, and correspondence, confirmations and most operational records three, with the first two years easily accessible either way. Five is the adviser number; three or six is the broker-dealer number.',
     difficulty: 'medium',
   },
   {
