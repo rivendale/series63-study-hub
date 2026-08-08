@@ -32,7 +32,8 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "review:md": "node scripts/generate-review.mjs"
+    "review:md": "node scripts/generate-review.mjs",
+    "rebalance:answers": "node scripts/rebalance-answers.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.456.0",

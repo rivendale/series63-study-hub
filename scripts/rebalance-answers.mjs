@@ -33,8 +33,12 @@ const DRY = process.argv.includes('--dry');
 const ROMAN = /^\s*(I{1,3}V?|IV|V)\b|^\s*'?(I|II|III|IV)[,\s]/;
 const ROMAN_GROUP = /\b(I|II|III|IV)\b.*\bonly\b|\bI,\s*II\b|\bI\s+and\s+I/i;
 const SELF_REF = /\ball of the above\b|\bnone of the above\b|\bboth of\b|\bneither of\b/i;
-const ORDERED_NUM =
-  /^\$?[\d,.]+(\s*(days?|business days?|years?|months?|hours?|%|million|billion))?$/i;
+// A choice set is "numeric" when every option leads with a figure — a bare
+// number, a duration, or a currency amount, however much prose follows it
+// ("$5,000 fine and/or 3 years imprisonment"). Exams present these in ascending
+// order, so rotating them reads as a formatting mistake even though no answer
+// changes. Matching only bare numerals here was not enough.
+const LEADS_WITH_FIGURE = /^\s*(\$|£|€)?\s*\d/;
 const POSITIONAL =
   /first (distractor|option|choice|answer)|last (option|choice|answer)|second (option|choice)|third (option|choice)|choice [A-D]\b|option [A-D]\b/i;
 
@@ -69,7 +73,7 @@ function eligible(block, choices) {
   const texts = choices.items.map(unquote);
   if (texts.some((t) => SELF_REF.test(t))) return 'self-referential choice';
   if (texts.some((t) => ROMAN_GROUP.test(t))) return 'roman-numeral grouping';
-  if (texts.every((t) => ORDERED_NUM.test(t.trim()))) return 'ordered numeric list';
+  if (texts.every((t) => LEADS_WITH_FIGURE.test(t))) return 'numeric choice set (kept in order)';
   const exp = block.match(/exp:\s*('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")/);
   if (exp && POSITIONAL.test(exp[1])) return 'explanation names a position';
   return null;

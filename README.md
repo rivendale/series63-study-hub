@@ -27,7 +27,7 @@ Each entry records what the app tells a student, why it was flagged, and the spe
 ## Features
 
 - **14-topic curriculum** covering the full NASAA outline plus 2022–2026 regulatory updates (Marketing Rule, SECURE 2.0, Reg BI, Form CRS, IAR CE, EVEP/MQP)
-- **114-question bank** with detailed explanations, distributed across all 14 topics
+- **272-question bank** with detailed explanations, weighted to the NASAA blueprint and balanced so each answer position holds 25% of the correct answers
 - **Topic quizzes** with immediate feedback after each question
 - **Mock exam** mirroring the real Prometric delivery: **65 questions (60 scored + 5 unscored pretest), 75 minutes, 72% pass mark (43 of 60)** — sampled in proportion to the official NASAA blueprint (47% BD/Agents, 35% Remedies/Admin, 10% Securities/Issuers, 8% IAs/IARs)
 - **Glossary** — searchable list of every key term across the curriculum
@@ -99,7 +99,7 @@ The per-topic file structure (rather than monolithic data files) keeps any singl
 
 - [x] v0.1 — initial release: curriculum, questions, mock exam, PWA
 - [x] v0.2 — NASAA-blueprint mock exam (65/60/5), glossary, cheat sheet
-- [ ] v0.3 — expand question bank to 250–300, add roman-numeral compound questions
+- [x] v0.3 — expand question bank to 250–300, add roman-numeral compound questions
 - [ ] v0.4 — "quiz only my missed questions" + lightweight spaced repetition
 - [ ] v0.5 — by-category progress (4 NASAA buckets) alongside by-topic
 - [ ] v1.0 — content reviewed by a licensed compliance professional
