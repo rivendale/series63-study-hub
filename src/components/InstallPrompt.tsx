@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Download, Share, SquarePlus } from 'lucide-react';
 import { useProgress } from '../hooks/useProgress';
-import { isStandalone } from '../lib/storage';
+import { isStandalone } from '../core/storage';
 
 /**
  * The offer to install.

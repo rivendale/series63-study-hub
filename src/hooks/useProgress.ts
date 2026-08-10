@@ -1,5 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
 import { scheduleNext } from '../core/spacedRepetition';
+import {
+  classifyWriteFailure,
+  clearRecovery,
+  getStorageState,
+  initStorageHealth,
+  reportHistoryTrimmed,
+  reportUnreadableRecord,
+  reportWriteFailure,
+  reportWriteOk,
+  subscribeStorage,
+  type StorageState,
+} from '../core/storage';
 
 const STORAGE_KEY = 'series63_progress';
 const SCHEMA_VERSION = 1 as const;
@@ -59,21 +71,7 @@ const defaultProgress: Progress = {
 const QUARANTINE_KEY = 'series63_progress_unreadable';
 
 /** Below this, a record is too small to be anything worth preserving. */
-const RESCUE_FLOOR_CHARS = 256;
-
-export interface RecoveryNotice {
-  /** Why the stored record could not be used. */
-  reason: 'unreadable' | 'foreign-schema';
-  /** False when the copy itself could not be written, so the original is all there is. */
-  preserved: boolean;
-  bytes: number;
-}
-
-let recoveryNotice: RecoveryNotice | null = null;
-
-export function getRecoveryNotice(): RecoveryNotice | null {
-  return recoveryNotice;
-}
+const RESCUE_MIN_CHARS = 256;
 
 /** The raw text of a quarantined record, for download. */
 export function readQuarantinedRecord(): string | null {
@@ -90,22 +88,51 @@ export function discardQuarantinedRecord(): void {
   } catch {
     // Nothing useful to do; the notice clears either way.
   }
-  recoveryNotice = null;
+  clearRecovery();
 }
 
-function quarantine(raw: string, reason: RecoveryNotice['reason']): void {
-  // Too small to be a real study record - a stray value or a truncated stub.
+/**
+ * Report a copy held from an earlier session, if there is one.
+ *
+ * Called on every load, not only on a failed one: once anything saves, the main
+ * key holds a readable record again, and without this the notice — and the only
+ * route to removing the copy — would disappear while the bytes stayed.
+ */
+function noteExistingQuarantine(): boolean {
+  if (typeof window === 'undefined') return false;
+  let existing: string | null = null;
+  try {
+    existing = window.localStorage.getItem(QUARANTINE_KEY);
+  } catch {
+    return false;
+  }
+  if (existing === null) return false;
+  reportUnreadableRecord({ key: QUARANTINE_KEY, bytes: existing.length, preserved: true });
+  return true;
+}
+
+/**
+ * Copy an unreadable record out of the way, once, and say that it happened.
+ *
+ * Best effort by necessity — the copy needs room, and a record too big to parse
+ * cleanly is often one written when room was already short. A failed copy is
+ * not a reason to refuse to save from here on, which would turn one lost record
+ * into an app that cannot be used at all; it is a reason to say so while the
+ * original is still there to be rescued by hand.
+ */
+function quarantine(raw: string): void {
+  // Too small to be a real study record — a stray value or a truncated stub.
   // Raising an alarm over these would train the user to dismiss the alarm.
-  if (raw.length < RESCUE_FLOOR_CHARS) return;
-  let preserved = true;
+  if (raw.length < RESCUE_MIN_CHARS) return;
+  // Already held from an earlier session. Overwriting it with a second copy of
+  // the same trouble would gain nothing and could cost the first one.
+  if (noteExistingQuarantine()) return;
   try {
     window.localStorage.setItem(QUARANTINE_KEY, raw);
+    reportUnreadableRecord({ key: QUARANTINE_KEY, bytes: raw.length, preserved: true });
   } catch {
-    // The copy did not fit. The original is still under the main key until the
-    // next save replaces it, so say so rather than claiming it was saved.
-    preserved = false;
+    reportUnreadableRecord({ key: QUARANTINE_KEY, bytes: raw.length, preserved: false });
   }
-  recoveryNotice = { reason, preserved, bytes: raw.length };
 }
 
 function load(): Progress {
@@ -123,14 +150,18 @@ function load(): Progress {
   try {
     parsed = JSON.parse(raw) as Progress;
   } catch {
-    quarantine(raw, 'unreadable');
+    quarantine(raw);
     return defaultProgress;
   }
 
   if (parsed?.schemaVersion !== SCHEMA_VERSION) {
-    quarantine(raw, 'foreign-schema');
+    quarantine(raw);
     return defaultProgress;
   }
+
+  // A readable record now, but a copy from an earlier session may still be
+  // sitting there with no other route to it.
+  noteExistingQuarantine();
 
   return {
     ...defaultProgress,
@@ -139,24 +170,57 @@ function load(): Progress {
   };
 }
 
+/** Mock attempts kept when a full quota forces a rescue write. */
+const TRIM_KEEP_ATTEMPTS = 25;
+
 /**
- * A write that fails silently is worse than one that throws. Every answer would
- * still appear to be recorded, because the UI renders from memory, and none of
- * it would survive a reload. Track the failure so the Progress page can say so.
+ * Persist the record, and say so when it does not work.
+ *
+ * The failure this guards against is not data loss on its own — it is data loss
+ * that looks like success. Answers are also held in memory, so after a refused
+ * write the screen still ticks up, the accuracy still moves, and nothing seems
+ * wrong until a reload throws the lot away. A silent catch here turns a bad
+ * afternoon into weeks of invisible loss.
+ *
+ * Returns the record that actually reached storage, which is not always the one
+ * passed in: a quota rescue writes a trimmed record, and the caller adopts that
+ * so memory and disk keep telling the same story.
  */
-export type WriteStatus = 'ok' | 'failing';
-let writeStatus: WriteStatus = 'ok';
+function save(p: Progress): Progress {
+  if (typeof window === 'undefined') return p;
 
-export function getWriteStatus(): WriteStatus {
-  return writeStatus;
-}
-
-function save(p: Progress) {
+  const json = JSON.stringify(p);
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
-    writeStatus = 'ok';
-  } catch {
-    writeStatus = 'failing';
+    window.localStorage.setItem(STORAGE_KEY, json);
+    reportWriteOk(json.length);
+    return p;
+  } catch (err) {
+    const kind = classifyWriteFailure(err);
+
+    // One recovery attempt before giving up. Trimming when there is nothing to
+    // trim would only fail identically, so it is not tried in that case — the
+    // student gets the honest failure instead of a pointless retry.
+    if (kind === 'quota' && p.mockAttempts.length > TRIM_KEEP_ATTEMPTS) {
+      // mockAttempts is newest-first everywhere it is built, so this keeps the
+      // most recent sittings and drops the oldest.
+      const trimmed: Progress = {
+        ...p,
+        mockAttempts: p.mockAttempts.slice(0, TRIM_KEEP_ATTEMPTS),
+      };
+      const dropped = p.mockAttempts.length - trimmed.mockAttempts.length;
+      const trimmedJson = JSON.stringify(trimmed);
+      try {
+        window.localStorage.setItem(STORAGE_KEY, trimmedJson);
+        reportHistoryTrimmed(TRIM_KEEP_ATTEMPTS, dropped, trimmedJson.length);
+        return trimmed;
+      } catch (retryErr) {
+        reportWriteFailure(classifyWriteFailure(retryErr));
+        return p;
+      }
+    }
+
+    reportWriteFailure(kind);
+    return p;
   }
 }
 
@@ -165,8 +229,11 @@ const listeners = new Set<Listener>();
 let current: Progress = load();
 
 function setProgress(updater: (p: Progress) => Progress) {
-  current = updater(current);
-  save(current);
+  // Adopt whatever actually reached storage. When a quota rescue drops the
+  // oldest mock attempts, keeping the untrimmed record here would leave the UI
+  // listing history that no longer exists on disk, and every later write would
+  // re-attempt the same oversized payload.
+  current = save(updater(current));
   listeners.forEach((l) => l(current));
 }
 
@@ -183,12 +250,24 @@ export function getProgress(): Progress {
 
 export function useProgress() {
   const [state, setState] = useState<Progress>(current);
+  const [storage, setStorage] = useState<StorageState>(getStorageState);
 
   useEffect(() => {
     listeners.add(setState);
     return () => {
       listeners.delete(setState);
     };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeStorage(setStorage);
+    // Runs once per session and nothing waits on it. The synchronous half means
+    // a browser refusing storage is known before the first answer rather than
+    // after it has been lost; the persistence request resolves whenever it
+    // resolves and changes nothing about how the app behaves meanwhile.
+    initStorageHealth();
+    setStorage(getStorageState());
+    return unsubscribe;
   }, []);
 
   const recordAnswer = useCallback(
@@ -243,6 +322,7 @@ export function useProgress() {
 
   return {
     progress: state,
+    storage,
     recordAnswer,
     markTopicRead,
     recordMockAttempt,

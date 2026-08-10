@@ -1,28 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Download, Trash2, AlertTriangle, LifeBuoy } from 'lucide-react';
 import {
   useProgress,
-  getRecoveryNotice,
-  getWriteStatus,
   readQuarantinedRecord,
   discardQuarantinedRecord,
 } from '../hooks/useProgress';
 import { overallStats, statsByCategory, statsByTopic, weightedReadiness } from '../lib/stats';
 import ProgressBar from '../components/ProgressBar';
 import { examInfo } from '../data/examInfo';
-import {
-  estimateUsage,
-  formatBytes,
-  isPersisted,
-  isStandalone,
-  type UsageEstimate,
-} from '../lib/storage';
+import { formatBytes } from '../core/storage';
 
 export default function ProgressPage() {
-  const { progress, resetAll, exportJson } = useProgress();
-  // Read once on mount: both are decided during module load, before render.
-  const [recovery, setRecovery] = useState(() => getRecoveryNotice());
-  const writeStatus = getWriteStatus();
+  const { progress, storage, resetAll, exportJson } = useProgress();
+  // Storage health is observable rather than read once: a write can start
+  // failing mid-session, and a quota rescue can trim history after the page
+  // has already rendered.
+  const { writeStatus, failureKind, recovery, trim, persistence, estimate, standalone } = storage;
 
   const downloadQuarantined = () => {
     const raw = readQuarantinedRecord();
@@ -39,19 +32,6 @@ export default function ProgressPage() {
   const categories = statsByCategory(progress);
   const readiness = weightedReadiness(progress);
 
-  // Durability state, read once on mount. null means the browser does not
-  // report it, which is a real answer and not the same as "not durable".
-  const [persisted, setPersisted] = useState<boolean | null>(null);
-  const [usage, setUsage] = useState<UsageEstimate | null>(null);
-  const installed = isStandalone();
-  useEffect(() => {
-    let alive = true;
-    void isPersisted().then((p) => alive && setPersisted(p));
-    void estimateUsage().then((u) => alive && setUsage(u));
-    return () => {
-      alive = false;
-    };
-  }, []);
   const [confirming, setConfirming] = useState(false);
 
   const download = () => {
@@ -201,37 +181,41 @@ export default function ProgressPage() {
 
         <div className="mb-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 p-3">
           <p className="text-sm font-medium">
-            {persisted === true
+            {persistence === 'persisted'
               ? 'Your progress is stored durably on this device'
-              : persisted === false
+              : persistence === 'denied'
                 ? 'Your progress is stored, but not marked durable'
-                : 'This browser does not report whether storage is durable'}
+                : persistence === 'unsupported'
+                  ? 'This browser does not report whether storage is durable'
+                  : 'Checking how this browser stores your progress'}
           </p>
           <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
-            {persisted === true ? (
+            {persistence === 'persisted' ? (
               <>
                 The browser has agreed not to clear it to reclaim space. It can still
                 be removed if you clear site data yourself.
               </>
-            ) : persisted === false ? (
+            ) : persistence === 'denied' ? (
               <>
                 Browsers may clear site data when a device runs short of space.{' '}
-                {installed
+                {standalone
                   ? 'The app is installed, which usually earns durability — it may be granted shortly.'
                   : 'Installing to your home screen usually earns it, and keeps everything else the same.'}{' '}
                 Either way, exporting a copy now and then is the reliable answer.
               </>
-            ) : (
+            ) : persistence === 'unsupported' ? (
               <>
                 That is normal on some browsers and does not mean anything is wrong.
                 Export a copy now and then and nothing here is irreplaceable.
               </>
+            ) : (
+              <>One moment — this resolves as soon as the browser answers.</>
             )}
-            {usage && (
+            {estimate && (
               <>
                 {' '}
-                Using {formatBytes(usage.usedBytes)} of{' '}
-                {formatBytes(usage.quotaBytes)} available.
+                Using {formatBytes(estimate.usedBytes)} of{' '}
+                {formatBytes(estimate.quotaBytes)} available.
               </>
             )}
           </p>
@@ -247,9 +231,31 @@ export default function ProgressPage() {
               Progress is not being saved
             </p>
             <p className="mt-1 text-sm text-red-900/90 dark:text-red-200/90">
-              This browser refused to write to local storage, so anything you do
-              now will be lost when you close the tab. Export a copy, then free
-              up space or check whether the browser is blocking site data.
+              Anything you do now will be lost when you close the tab, so export a
+              copy first.{' '}
+              {failureKind === 'quota'
+                ? 'Storage is full. Clearing space on the device, or resetting progress after exporting, will let saving resume.'
+                : failureKind === 'unavailable'
+                  ? 'This browser is refusing site data altogether — private browsing and blocked cookies both do that. Saving will resume in a normal window with site data allowed.'
+                  : 'Free up space, or check whether the browser is blocking site data.'}
+            </p>
+          </div>
+        )}
+
+        {trim && (
+          <div
+            role="status"
+            className="mb-4 rounded-lg border border-amber-300 dark:border-amber-900/60 bg-amber-50 dark:bg-amber-950/30 p-3"
+          >
+            <p className="flex items-start gap-2 text-sm font-semibold text-amber-900 dark:text-amber-200">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              Older mock attempts were dropped
+            </p>
+            <p className="mt-1 text-sm text-amber-900/90 dark:text-amber-200/90">
+              Storage filled up, so the {trim.dropped} oldest mock{' '}
+              {trim.dropped === 1 ? 'attempt was' : 'attempts were'} removed to get your
+              work saved. The {trim.kept} most recent are still here, and answers and
+              topics read were untouched. Export a copy if you want the full history.
             </p>
           </div>
         )}
@@ -264,9 +270,8 @@ export default function ProgressPage() {
               An earlier progress record could not be read
             </p>
             <p className="mt-1 text-sm text-amber-900/90 dark:text-amber-200/90">
-              {recovery.reason === 'foreign-schema'
-                ? 'It was written in a format this version does not recognise'
-                : 'It was damaged, most likely by an interrupted save'}
+              It was either written by a different version of this app or damaged by
+              an interrupted save
               {recovery.preserved
                 ? ', so it has been set aside rather than overwritten. Download it if you want to keep it — a future version may be able to read it.'
                 : '. A copy could not be set aside because storage is full, so download it now if you want to keep it.'}
@@ -282,10 +287,7 @@ export default function ProgressPage() {
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  discardQuarantinedRecord();
-                  setRecovery(null);
-                }}
+                onClick={discardQuarantinedRecord}
                 className="px-3 py-2 rounded-lg text-sm font-semibold bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 min-h-[44px]"
               >
                 Discard

@@ -10,20 +10,10 @@ import About from './pages/About';
 import Glossary from './pages/Glossary';
 import CheatSheet from './pages/CheatSheet';
 import Review from './pages/Review';
-import { useEffect } from 'react';
 import { useTheme } from './hooks/useProgress';
-import { requestPersistence } from './lib/storage';
 
 export default function App() {
   useTheme();
-
-  // Ask once per load for durable storage. On Chrome this is granted silently
-  // on engagement heuristics and makes the study record exempt from eviction;
-  // elsewhere it is a no-op. The answer is not surfaced here — the Progress
-  // page reports the resulting state, which is where somebody would look.
-  useEffect(() => {
-    void requestPersistence();
-  }, []);
   return (
     <HashRouter>
       <Layout>

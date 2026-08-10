@@ -52,6 +52,7 @@ not a redesign.
 | `types.ts` | Structural types the host app must satisfy. No behaviour. |
 | `shuffle.ts` | `shuffle` and `sample`, used by mock construction and topic drills. |
 | `spacedRepetition.ts` | Five-box Leitner scheduler, plus due/missed selection and the review summary. |
+| `storage.ts` | Storage health as an observable: write status and failure kind, quota-trim notices, durability, usage, and the unreadable-record report. Holds no keys — the host passes them in. |
 
 ## What is *not* here yet
 
@@ -61,10 +62,5 @@ Deliberately deferred rather than forgotten:
   requires inverting the dependency so the functions take questions, topics and
   categories as arguments instead of importing them. Straightforward, but it
   touches every call site.
-- **`storage.ts`** — the two implementations differ substantially. Series 65
-  owns write-failure reporting through an observable; Series 63 handles the same
-  concern inside `useProgress`. Reconciling them means restructuring one app's
-  save path, which is the riskiest part of the extraction and deserves its own
-  pass.
 - **`mergeProgress` / `syncClient` / `syncCrypto`** — Series 65 only, and
   self-contained. They can move as-is once a second app actually needs sync.
