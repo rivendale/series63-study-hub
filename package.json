@@ -33,7 +33,9 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "review:md": "node scripts/generate-review.mjs",
-    "rebalance:answers": "node scripts/rebalance-answers.mjs"
+    "rebalance:answers": "node scripts/rebalance-answers.mjs",
+    "core:check": "node scripts/check-core.mjs",
+    "core:regen": "node scripts/check-core.mjs --regen"
   },
   "dependencies": {
     "lucide-react": "^0.456.0",

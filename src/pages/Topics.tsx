@@ -6,7 +6,7 @@ import { statsByTopic } from '../lib/stats';
 import TopicCard from '../components/TopicCard';
 import { examInfo } from '../data/examInfo';
 import { questions } from '../data/questions';
-import { formatDueIn, reviewSummary } from '../lib/spacedRepetition';
+import { formatDueIn, reviewSummary } from '../core/spacedRepetition';
 import { REVIEW_SESSION_LIMIT } from '../hooks/useQuiz';
 
 export default function Topics() {

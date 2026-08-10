@@ -1,5 +1,4 @@
-import type { Question } from '../data/questions';
-import type { Progress } from '../hooks/useProgress';
+import type { AnswerRecord, ProgressLike, QuestionLike } from './types';
 
 /**
  * A deliberately small Leitner scheduler.
@@ -49,8 +48,6 @@ export function scheduleNext(
   return { box, due: now + BOX_INTERVALS_DAYS[box] * DAY_MS };
 }
 
-type AnswerRecord = Progress['answers'][number];
-
 export function isDue(a: AnswerRecord | undefined, now: number): boolean {
   if (!a) return false;
   // A record written before this feature has no due date. Treat it as due, so
@@ -60,14 +57,18 @@ export function isDue(a: AnswerRecord | undefined, now: number): boolean {
 }
 
 /** Questions whose most recent answer was wrong, hardest-hit first. */
-export function selectMissed(progress: Progress, pool: Question[]): Question[] {
+export function selectMissed<T extends QuestionLike>(progress: ProgressLike, pool: T[]): T[] {
   return pool
     .filter((q) => progress.answers[q.id]?.correct === false)
     .sort((a, b) => (progress.answers[a.id]?.ts ?? 0) - (progress.answers[b.id]?.ts ?? 0));
 }
 
 /** Questions that have come due, most overdue first. */
-export function selectDue(progress: Progress, pool: Question[], now: number): Question[] {
+export function selectDue<T extends QuestionLike>(
+  progress: ProgressLike,
+  pool: T[],
+  now: number
+): T[] {
   return pool
     .filter((q) => isDue(progress.answers[q.id], now))
     .sort((a, b) => {
@@ -93,8 +94,8 @@ export interface ReviewSummary {
 }
 
 export function reviewSummary(
-  progress: Progress,
-  pool: Question[],
+  progress: ProgressLike,
+  pool: QuestionLike[],
   now: number
 ): ReviewSummary {
   let missed = 0;

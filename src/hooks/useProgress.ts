@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { scheduleNext } from '../lib/spacedRepetition';
+import { scheduleNext } from '../core/spacedRepetition';
 
 const STORAGE_KEY = 'series63_progress';
 const SCHEMA_VERSION = 1 as const;
@@ -22,7 +22,7 @@ export interface Progress {
    * existing record through the unreadable-record quarantine path. That path is
    * right for a genuinely incompatible change and wrong for an additive one, so
    * records written before this feature simply arrive without them and are
-   * treated as due. See src/lib/spacedRepetition.ts.
+   * treated as due. See src/core/spacedRepetition.ts.
    */
   answers: Record<
     number,

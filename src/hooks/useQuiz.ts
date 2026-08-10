@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { questions, type Question } from '../data/questions';
 import { topics } from '../data/curriculum';
-import { sample, shuffle } from '../lib/shuffle';
+import { sample, shuffle } from '../core/shuffle';
 import {
   OFFICIAL_CATEGORIES,
   TOPIC_TO_CATEGORY,
@@ -9,7 +9,7 @@ import {
 } from '../data/categories';
 import { examInfo } from '../data/examInfo';
 import { getProgress } from './useProgress';
-import { selectDue, selectMissed } from '../lib/spacedRepetition';
+import { selectDue, selectMissed } from '../core/spacedRepetition';
 
 export type QuizMode = 'topic' | 'mock' | 'missed' | 'review';
 
