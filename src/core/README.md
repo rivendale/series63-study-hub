@@ -25,10 +25,15 @@ interchangeable: `src/lib` may import from `src/core`, never the reverse.
 npm run core:check
 ```
 
-It fails if any local file no longer matches the manifest. Because every
-consuming repo carries the *same* manifest, a change made in one repo and not
-propagated to the others shows up as a failure rather than as silent drift —
-which is exactly how these two apps diverged in the first place.
+It fails if any local file no longer matches the manifest — so it catches an
+**unregenerated local edit** to core.
+
+**It does not detect cross-repository drift, and it is worth being exact.** Once
+`core:regen` is run, this repo's manifest matches this repo's files and the check
+passes; the sibling's manifest still matches the sibling's files, so it passes
+too. Both are green while holding different cores. The manifest is a
+tamper-check on a single repo, not a synchronisation mechanism. Propagation is a
+manual `diff -r` between the two `src/core` trees.
 
 When you deliberately change a core module:
 
