@@ -124,7 +124,7 @@ Paste this section into a GitHub issue or a PR body to track the review there; t
 
 **Chapter:** [Administrative Actions and Penalties](src/data/topics/admin-actions.ts) — topic id `admin-actions` · [read in the app](https://rivendale.github.io/series63-study-hub/#/curriculum/admin-actions)
 
-**The app asserts.** 1956 act (§410(f)): the earlier of 3 years after the contract of sale or the rendering of investment advice, or 2 years after discovery — one rule for every claim. 2002 act: split by claim type — fraud (§509(j)(2)) gets the earlier of 2 years after discovery or 5 years after the violation, a registration violation (§509(j)(1)) gets 1 flat year from the violation. Criminal: 5 years after the alleged violation.
+**The app asserts.** 1956 act (§410(f)): the earlier of 3 years after the contract of sale or the rendering of investment advice, or 2 years after discovery — one rule for every claim. 2002 act: split by claim type — fraud (§509(j)(2)) gets the earlier of 2 years after discovery or 5 years after the violation, a registration violation (§509(j)(1)) gets 1 flat year from the violation. Criminal: 5 years after the alleged violation — a clause bracketed in the model text, so state-supplied rather than universal.
 
 **Why it is flagged.** This entry is a warning, not a doubt. An automated pass talked itself out of the correct rule on the reasoning that the widely taught 3-and-2 pair looked like a prep-industry convention. It is the statutory text. The reasoning was plausible, the replacement was fluent, and it was wrong twice in a row before anyone opened the act.
 

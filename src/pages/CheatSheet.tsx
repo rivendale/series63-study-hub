@@ -26,7 +26,7 @@ const thresholds: ThresholdRow[] = [
   { rule: 'Hearing set down after written request', threshold: 'Within 15 days of the request (not a deadline to ask)' },
   { rule: 'Securities registration period', threshold: 'Typically 1 year' },
   { rule: 'Civil statute of limitations', threshold: '1956 act (§410(f)): earlier of 3 yrs after sale or rendering of advice, or 2 yrs after discovery · 2002 act: fraud (§509(j)(2)) earlier of 2 yrs after discovery / 5 yrs after violation; registration violation (§509(j)(1)) 1 yr flat' },
-  { rule: 'Criminal statute of limitations', threshold: '5 yrs after the alleged violation (1956 act)' },
+  { rule: 'Criminal statute of limitations', threshold: '5 yrs after the alleged violation — 1956 model text, bracketed as state-supplied' },
   { rule: 'Criminal penalty per willful violation', threshold: '$5,000 / 3 yrs — model-act maximums; adopting states set their own' },
   { rule: 'RMD age (post-SECURE 2.0)', threshold: '73 (rises to 75 in 2033)' },
   { rule: 'IAR CE credits', threshold: '12 annually (6 Products + 6 Ethics)' },

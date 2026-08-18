@@ -193,7 +193,7 @@ export const reviewItems: ReviewItem[] = [
     category: 'state-variation',
     status: 'corrected',
     asserted:
-      '1956 act (\u00a7410(f)): the earlier of 3 years after the contract of sale or the rendering of investment advice, or 2 years after discovery \u2014 one rule for every claim. 2002 act: split by claim type \u2014 fraud (\u00a7509(j)(2)) gets the earlier of 2 years after discovery or 5 years after the violation, a registration violation (\u00a7509(j)(1)) gets 1 flat year from the violation. Criminal: 5 years after the alleged violation.',
+      '1956 act (\u00a7410(f)): the earlier of 3 years after the contract of sale or the rendering of investment advice, or 2 years after discovery \u2014 one rule for every claim. 2002 act: split by claim type \u2014 fraud (\u00a7509(j)(2)) gets the earlier of 2 years after discovery or 5 years after the violation, a registration violation (\u00a7509(j)(1)) gets 1 flat year from the violation. Criminal: 5 years after the alleged violation — a clause bracketed in the model text, so state-supplied rather than universal.',
     concern:
       'This entry is a warning, not a doubt. An automated pass talked itself out of the correct rule on the reasoning that the widely taught 3-and-2 pair looked like a prep-industry convention. It is the statutory text. The reasoning was plausible, the replacement was fluent, and it was wrong twice in a row before anyone opened the act.',
     verify:
