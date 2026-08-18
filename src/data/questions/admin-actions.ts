@@ -41,15 +41,15 @@ export const items: Question[] = [
   {
     id: 47,
     topic: 'admin-actions',
-    q: 'Under the 2002 Uniform Securities Act, a civil action must be brought within the EARLIER of:',
+    q: 'Under the 2002 Uniform Securities Act, a civil action based on FRAUD must be brought within the EARLIER of:',
     choices: [
       '2 years after discovery of the facts constituting the violation OR 5 years after the violation',
-      '3 years after the violation OR 2 years after discovery',
+      '3 years after the contract of sale or the rendering of investment advice OR 2 years after discovery',
       '5 years after the violation OR 3 years after discovery',
       '1 year after discovery OR 3 years after the violation',
     ],
     answer: 0,
-    exp: 'Section 509(j) of the 2002 act sets the earlier of two years after discovery of the facts constituting the violation or five years after the violation. Two things worth holding alongside it. Most states still operate under statutes based on the 1956 act, which used a single trigger — two years after the CONTRACT OF SALE — so a fact pattern not naming an act is more likely reaching for that. And the "3 years from violation or 2 years from discovery" pairing offered here as a distractor circulates widely in study material despite matching neither model act; recognise it as a teaching convention rather than statutory text. The criminal clock is separate again: no indictment more than five years after the alleged violation.',
+    exp: 'Section 509(j)(2) of the 2002 act sets the earlier of two years after discovery of the facts constituting the violation or five years after the violation. The stem says FRAUD deliberately: the 2002 act splits by claim type, and a claim resting on a registration violation instead gets one flat year from the violation under §509(j)(1), with no discovery prong. Naming the 2002 act is therefore not enough on its own — you need the claim type too. The second choice is also not a made-up figure: it is §410(f) of the 1956 act, stated correctly, and most states still run on 1956-based statutes. Note that 1956 trigger precisely — three years runs from the CONTRACT OF SALE or the RENDERING OF INVESTMENT ADVICE, not from the violation. Material that renders it as "three years after the violation" has the figure right and the trigger wrong, and the advice trigger is what catches an adviser who never sold the client anything. The criminal clock is separate again: no indictment more than five years after the alleged violation — though that clause is bracketed in the 1956 model text, marking it optional for states that already have a general criminal limitations period.',
     difficulty: 'medium',
   },
   {

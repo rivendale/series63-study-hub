@@ -96,6 +96,19 @@ The method that works: extract every assertion touching a given rule across all 
 
 When you do correct a rule, fix the chapter body, the `pitfalls`, the `keyTerms`, every question in `questionIds`, and the cheat sheet in the same pass. A half-applied correction leaves the app disagreeing with itself two lines apart, which happened here more than once.
 
+  **Two surfaces that list does not name, each of which has bitten:**
+
+  - **Prose that generalises over a table is itself a surface.** Add a row and
+    the sentence beneath saying "the pattern here is…" silently stops being
+    true. Table and paragraph then contradict each other two lines apart, and
+    both look deliberate.
+  - **Search for phrasings, not your phrasing.** A sweep reported a surface
+    clean because it grepped `3 years` where the file said `3 yrs`; another
+    missed a claim because the pattern `5 years after` cannot match
+    `**5 years** after`. A false negative from a too-specific pattern is
+    indistinguishable from a clean result. **Prove the pattern fires against a
+    file you know contains the claim before trusting that it found everything.**
+
 ### Progress schema and spaced repetition
 
 `useProgress` persists to `localStorage` under `series63_progress` at `SCHEMA_VERSION = 1`. A record whose version does not match is **quarantined**, not overwritten — `load()` sets it aside under `series63_progress_unreadable` and the Progress page offers to download it. That path exists because the original code returned defaults on a version mismatch and the next save destroyed the original: opening the app was enough to lose a study history.
@@ -147,7 +160,7 @@ A successful build produces:
 
 - **Qualified client** is **$1.4M AUM with the IA or $2.7M net worth excluding the primary residence**, raised from $1.1M/$2.2M by SEC order effective **2026-06-29**, with existing contracts grandfathered. The SEC re-indexes Rule 205-3 about every five years — this repo carried the stale pair for roughly six weeks, so re-check it before each content revision rather than trusting the number in this file.
 - **Statutory disqualification.** The app once had this inverted. The **1956 act** (§204(a)(2)(B)) reaches convictions within the past 10 years for qualifying misdemeanors *and* felonies alike; the **2002 act** (§412(d)(3)) reaches **any felony with no time limit** plus a qualifying misdemeanor within 10 years. Neither act says securities misdemeanors are unlimited. Safe ground under either: a conviction within the past 10 years.
-- **Civil statute of limitations.** The widely circulated "3 years from violation / 2 years from discovery" pairing matches **neither** model act. 1956: two years after the **contract of sale**. 2002: earlier of two years after discovery or **five** years after the violation. Criminal is separate again — five years.
+- **Civil statute of limitations.** This entry previously said the opposite, and the correction cost two bad commits in the sibling repo before anyone opened the act. The "3 years / 2 years" pairing is **not** a prep-industry convention — it is **§410(f)** of the 1956 act verbatim: no suit more than **3 years after the contract of sale, or the rendering of investment advice**, or more than **2 years after discovery**, **whichever first occurs**. The limitations provision is **§410(f)**; §410(e) is survival of the cause of action after death. The phrase "four years" appears nowhere in the act — there is no outer cap by claim type and no split between §410(a)(1) and §410(a)(2). 2002 act: **splits by claim type** — fraud (§509(j)(2)) gets the earlier of two years after discovery or **five** years after the violation, while a claim resting on a registration violation (§509(j)(1)) gets **one flat year**, no discovery prong. That split and its subsection numbers are now **confirmed against the primary text** — the 2002 act's own prefatory note states §509(j)(1) limits registration violations to "one year after the violation occurred" and §509(j)(2) limits fraud to the earlier of "two years after the discovery of the facts constituting the violation or five years after such violation". Do not assume those two branches are a complete map of §509. Criminal is separate again — five years, but that clause is **bracketed** in the model text, which marks state-supplied or optional text there (the same convention as `[Administrator]`), so it is the figure to know rather than a universal rule. **If a content pass concludes this rule is a myth, that conclusion is the myth.** Read §410(f) before editing.
 - **The 15-day hearing clock** is the Administrator's deadline to set a matter down **after receiving a written request**, not a countdown for the registrant to ask. The model act sets no deadline for making the request.
 - **Discretion.** A **BD agent** needs the written DPOA in hand first. An **investment adviser** may begin on oral authority with written authorisation due within **10 business days of the first transaction** (NASAA Model Rule 102(a)(4)-1). Stating the agent rule as an unscoped absolute is how this went wrong.
 - **Private placement** counts **offerees, not buyers** — an eleventh retail person merely *offered* the security breaks the exemption even if they never purchase.
