@@ -75,10 +75,21 @@ mechanically checked by `npm run core:check`:
 > Nothing in `src/core` may import from `src/data`, `src/hooks`, `src/pages`,
 > `src/components` or `src/lib`.
 
-Core declares the shape it needs; the host passes data in. A shared
-`MANIFEST.sha256` means a change made in one app and not propagated to the other
-**fails the check** rather than becoming silent drift — which is exactly how the
-two apps diverged before the extraction.
+Core declares the shape it needs; the host passes data in.
+
+**`MANIFEST.sha256` does NOT detect cross-repository drift, and it is worth being
+precise about what it does.** `core:check` hashes the local `src/core` files
+against the manifest *in the same repo*. It catches an **unintended local edit**
+to core. It cannot see the sibling app at all — so after `npm run core:regen` in
+one repo, **both repos pass their own check while holding different cores.**
+Keeping the two in step is a manual diff:
+
+```bash
+diff -r <this-repo>/src/core <sibling-repo>/src/core
+```
+
+Run that before trusting that a core change propagated. The manifest is a
+tamper-check, not a synchronisation mechanism.
 
 ## Guardrails — every one of these has actually failed here
 
@@ -134,16 +145,28 @@ citation is worse than the vague figure it replaces, because it survives review.
 One correction was caught only because its author flagged an unverified claim
 rather than letting it pass as settled.
 
-## Base path: a three-place change
+## Base path: six lines, and missing one half-breaks the app
 
-Moving off a subpath touches three places, and changing one leaves the app
-half-working, which is worse than not working:
+Moving off a subpath is not the three-place change the original handover
+recorded. Measured on this repo:
+
+```bash
+grep -n "<repo-name>" vite.config.ts index.html
+```
 
 ```
-vite.config.ts    base: '/<repo-name>/'  →  '/'
-vite.config.ts    manifest scope + start_url
-index.html        icon href and apple-touch-icon href
+index.html:5        <link rel="icon" href="/<repo-name>/icon.svg">
+index.html:12       <link rel="apple-touch-icon" href="/<repo-name>/icon-192.png">
+vite.config.ts:6    base: '/<repo-name>/'
+vite.config.ts:19   manifest scope
+vite.config.ts:20   manifest start_url
+vite.config.ts:34   workbox navigateFallback
 ```
+
+**`navigateFallback` is the one that gets missed**, and it fails in the worst
+way: the app works online and breaks only offline, because the service worker
+falls back to an `index.html` at a path that no longer exists. Change all six in
+one commit and verify the built `dist/index.html` references resolve.
 
 ## Still outside core, with reasons
 
@@ -152,7 +175,7 @@ as arguments instead of importing them. That single change is what blocks sharin
 it, and it is the same reason the two copies drifted. Sync (`mergeProgress`,
 `syncClient`, `syncCrypto`) moves when a second app needs it.
 
-**On sync merge behaviour:** the merge keeps a fixed total of mock attempts, not
-that many *per device*. A long history on one device loses its excess. It also
-resolves answers by timestamp, so check device clocks before the first sync, and
-export from the device with the longer history first.
+**Sync lives in the sibling app, not here.** This repo has no `syncClient`,
+`syncCrypto` or `mergeProgress`. If sync is ever ported in, read that
+implementation rather than this paragraph — its merge semantics are its own and
+are documented there.
