@@ -315,6 +315,14 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
   for (const [qid, a] of Object.entries(remote.answers)) {
     if (keep(a.ts)) answers[Number(qid)] = a;
   }
+  // KNOWN BOUND, accepted deliberately: with THREE OR MORE tabs writing
+  // different values for the SAME question in the SAME millisecond, memories
+  // can transiently disagree with disk (each merge equals its own remote, so
+  // nobody re-saves). The divergence self-heals at the next write or reload,
+  // affects only that one answer, and the honest fix would be vector clocks —
+  // out of proportion for a single-student quiz app. Recorded here so a future
+  // reader knows it was seen, weighed, and bounded rather than missed.
+  //
   // Ties (equal ts) keep the REMOTE entry, and that is load-bearing for
   // termination, not an accident: a remote-wins tie means whichever tab merges
   // first ADOPTS the other's value, so when its save reaches the other tab,
@@ -339,7 +347,11 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
   // timeUsed joins the identity: two sittings finishing in the same millisecond
   // with the same score is already remote across devices, but identity is cheap
   // and a dropped sitting is not.
-  const attemptKey = (m: MockAttempt) => `${m.ts}:${m.total}:${m.correct}:${m.timeUsed}`;
+  // JSON.stringify per field keeps the key type-preserving: timeUsed of []
+  // and "" must not share an identity, or two malformed-but-distinct attempts
+  // dedupe into one.
+  const attemptKey = (m: MockAttempt) =>
+    [m.ts, m.total, m.correct, m.timeUsed].map((v) => JSON.stringify(v)).join(':');
   const remoteKept = remote.mockAttempts.filter((m) => keep(m.ts));
   const seen = new Set(remoteKept.map(attemptKey));
   const extra = local.mockAttempts.filter((m) => keep(m.ts) && !seen.has(attemptKey(m)));
@@ -355,13 +367,32 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
   // and a hand-imported attempt with timeUsed:null subtracts as 0 against a
   // real 0 — numeric ties on malformed data would fall back to remote-first
   // insertion order and re-open the mirror-order oscillation.
+  // Field comparator that stays a strict weak order for ANY JSON value: the
+  // loader accepts arbitrary schemaVersion-1 records, and raw subtraction on a
+  // malformed field yields NaN — an INCONSISTENT comparator, under which the
+  // engine's sort produces arbitrary (and cross-tab different) orders, quietly
+  // re-opening the oscillation the identity tiebreak closed. Finite numbers
+  // order numerically and before non-numerics; non-numerics order by their
+  // JSON text.
+  const cmpField = (a: unknown, b: unknown): number => {
+    const na = Number(a);
+    const nb = Number(b);
+    const fa = Number.isFinite(na);
+    const fb = Number.isFinite(nb);
+    if (fa && fb) return nb - na;
+    if (fa) return -1;
+    if (fb) return 1;
+    const sa = JSON.stringify(a) ?? 'null';
+    const sb = JSON.stringify(b) ?? 'null';
+    return sa < sb ? -1 : sa > sb ? 1 : 0;
+  };
   const mockAttempts = [...remoteKept, ...extra]
     .sort(
       (x, y) =>
-        y.ts - x.ts ||
-        y.timeUsed - x.timeUsed ||
-        y.correct - x.correct ||
-        y.total - x.total ||
+        cmpField(x.ts, y.ts) ||
+        cmpField(x.timeUsed, y.timeUsed) ||
+        cmpField(x.correct, y.correct) ||
+        cmpField(x.total, y.total) ||
         (attemptKey(x) < attemptKey(y) ? -1 : attemptKey(x) > attemptKey(y) ? 1 : 0)
     )
     .slice(0, 50);

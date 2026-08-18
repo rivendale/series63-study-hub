@@ -319,5 +319,38 @@ const dumpS = JSON.stringify(S2.getProgress().mockAttempts);
 const dumpT = JSON.stringify(T2.getProgress().mockAttempts);
 check('null-timeUsed: both tabs converge on identical bytes', dumpS === dumpT);
 
+// ---- non-numeric attempt fields must not produce an inconsistent comparator --
+closeAllTabs();
+backing.set('series63_progress', JSON.stringify({ ...seed, mockAttempts: [] }));
+const U2 = await asTab('U', () => import(`${modPath}?tab=U`));
+const V2 = await asTab('V', () => import(`${modPath}?tab=V`));
+await asTab('U', () => U2.initCrossTabSync());
+await asTab('V', () => V2.initCrossTabSync());
+pauseDelivery = true;
+await asTab('U', () => U2.updateProgress((p) => ({
+  ...p, mockAttempts: [
+    { ts: 16000, correct: 1, total: 60, pct: 2, timeUsed: 1, answers: [] },
+    { ts: 16000, correct: 1, total: 60, pct: 2, timeUsed: '1.5x', answers: [] },
+  ] })));
+await asTab('V', () => V2.updateProgress((p) => ({
+  ...p, mockAttempts: [
+    { ts: 16000, correct: 1, total: 60, pct: 2, timeUsed: 2, answers: [] },
+    { ts: 16000, correct: 1, total: 60, pct: 2, timeUsed: [], answers: [] },
+    { ts: 16000, correct: 1, total: 60, pct: 2, timeUsed: '', answers: [] },
+  ] })));
+let junkWrites = 0;
+const origSet3 = localStorageStub.setItem;
+localStorageStub.setItem = (k, v) => { if (k === 'series63_progress') junkWrites++; return origSet3(k, v); };
+flushDelivery();
+localStorageStub.setItem = origSet3;
+check('junk-fields: exchange converges (bounded writes)', junkWrites <= 4,
+  `saw ${junkWrites} writes — NaN comparator re-opened the oscillation`);
+const ju = JSON.stringify(U2.getProgress().mockAttempts);
+const jv = JSON.stringify(V2.getProgress().mockAttempts);
+check('junk-fields: tabs converge on identical bytes', ju === jv);
+check('junk-fields: [] and "" stay DISTINCT attempts (type-preserving identity)',
+  JSON.parse(backing.get('series63_progress')).mockAttempts.length === 5,
+  `kept ${JSON.parse(backing.get('series63_progress')).mockAttempts.length} of 5`);
+
 console.log(`\n${pass} ok, ${fail} failed`);
 process.exit(fail ? 1 : 0);
