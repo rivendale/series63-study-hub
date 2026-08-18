@@ -14,6 +14,26 @@
  */
 const backing = new Map();
 let currentTab = 'boot';
+let pauseDelivery = false;
+const queued = [];
+// Close every open "tab" between scenarios. Without this, a tab from an
+// earlier scenario keeps merging into later ones — scenario I's reset
+// tombstone destroyed scenario K's legacy answer, which is a fact about the
+// harness, not the store: real browsers close tabs.
+const closeAllTabs = () => { tabListeners.length = 0; queued.length = 0; pauseDelivery = false; };
+const flushDelivery = () => {
+  pauseDelivery = false;
+  while (queued.length) {
+    const { writer, ev } = queued.shift();
+    for (const { tag, fn } of tabListeners) {
+      if (tag === writer) continue;
+      const before = currentTab;
+      currentTab = tag;
+      fn(ev);
+      currentTab = before;
+    }
+  }
+};
 const tabListeners = []; // {tag, fn}
 
 const localStorageStub = {
@@ -22,8 +42,20 @@ const localStorageStub = {
     const oldValue = backing.has(k) ? backing.get(k) : null;
     backing.set(k, String(v));
     const ev = { key: k, oldValue, newValue: String(v) };
+    // A write from inside tab B's storage handler is B's write, even though it
+    // happens during A's dispatch. Without re-tagging around each handler call,
+    // a nested save was attributed to the ORIGINAL writer — delivered back to
+    // the tab that made it and hidden from the tab it should reach. Browsers
+    // attribute by document, so the stub must too.
     const writer = currentTab;
-    for (const { tag, fn } of tabListeners) if (tag !== writer) fn(ev);
+    if (pauseDelivery) { queued.push({ writer, ev }); return; }
+    for (const { tag, fn } of tabListeners) {
+      if (tag === writer) continue;
+      const before = currentTab;
+      currentTab = tag;
+      fn(ev);
+      currentTab = before;
+    }
   },
   removeItem: (k) => backing.delete(k),
 };
@@ -78,6 +110,7 @@ check('cross-tab: tab B answer on disk too', !!disk1.answers[200]);
 check('cross-tab: tab A memory learned of B\'s answer', !!A.getProgress().answers[200],
   'A never saw B\'s write');
 
+closeAllTabs();
 // ---- BUG 2: second unreadable record is dropped when quarantine occupied ---
 const bigGarbage1 = 'x'.repeat(300) + '{not json';
 const bigGarbage2 = 'y'.repeat(4000) + '{worse json — months of study, corrupted differently';
@@ -94,6 +127,7 @@ check('larger second unreadable record is preserved somewhere', q === bigGarbage
   `quarantine still holds the FIRST (${q?.length} chars); the 4000-char record has no copy and the next save destroys it`);
 void C; void D;
 
+closeAllTabs();
 // ---- reset semantics across tabs -------------------------------------------
 // A reset in one tab must not be silently undone by the other tab's memory —
 // and an answer recorded AFTER the reset must survive the merge.
@@ -120,6 +154,78 @@ await asTab('F', () => F.updateProgress((p) => ({
 check('reset: post-reset answer in F reaches disk',
   !!JSON.parse(backing.get('series63_progress')).answers[300]);
 check('reset: post-reset answer visible in E', !!E.getProgress().answers[300]);
+
+closeAllTabs();
+// ---- racing writes: delivery paused so BOTH tabs write before either merges --
+backing.set('series63_progress', JSON.stringify(seed));
+const G = await asTab('G', () => import(`${modPath}?tab=G`));
+const H = await asTab('H', () => import(`${modPath}?tab=H`));
+await asTab('G', () => G.initCrossTabSync());
+await asTab('H', () => H.initCrossTabSync());
+pauseDelivery = true;
+await asTab('G', () => G.updateProgress((p) => ({
+  ...p, answers: { ...p.answers, 400: { correct: true, ts: 7000, selected: 0 } },
+})));
+await asTab('H', () => H.updateProgress((p) => ({
+  ...p, answers: { ...p.answers, 500: { correct: true, ts: 7001, selected: 1 } },
+})));
+flushDelivery();
+const disk3 = JSON.parse(backing.get('series63_progress'));
+check('race: both racing answers reach disk', !!disk3.answers[400] && !!disk3.answers[500],
+  `disk has 400=${!!disk3.answers[400]} 500=${!!disk3.answers[500]}`);
+check('race: both tabs converge in memory',
+  !!G.getProgress().answers[500] && !!H.getProgress().answers[400]);
+
+closeAllTabs();
+// ---- stale writer vs reset: the tombstone must reach DISK, not just memory ---
+backing.set('series63_progress', JSON.stringify(seed));
+const I = await asTab('I', () => import(`${modPath}?tab=I`));
+const J = await asTab('J', () => import(`${modPath}?tab=J`));
+await asTab('I', () => I.initCrossTabSync());
+await asTab('J', () => J.initCrossTabSync());
+pauseDelivery = true;                      // J will not hear about the reset
+await asTab('I', () => I.updateProgress(() => ({
+  schemaVersion: 1, answers: {}, topicsRead: {}, mockAttempts: [],
+  preferences: { fontSize: 'md', theme: 'system' }, resetAt: 8000,
+})));
+queued.length = 0; pauseDelivery = false;  // drop the reset event: J stays stale
+await asTab('J', () => J.updateProgress((p) => p)); // stale J re-writes pre-reset record
+const disk4 = JSON.parse(backing.get('series63_progress'));
+check('stale-writer: tombstone is back on DISK after I merges', disk4.resetAt === 8000,
+  `disk resetAt=${disk4.resetAt}; a reload would resurrect pre-reset data`);
+check('stale-writer: pre-reset answer stays gone on disk', !disk4.answers?.[1]);
+
+closeAllTabs();
+// ---- missing ts must survive a merge when no reset exists --------------------
+backing.set('series63_progress', JSON.stringify({
+  ...seed, answers: { 9: { correct: true, selected: 1 } } })); // no ts at all
+const K = await asTab('K', () => import(`${modPath}?tab=K`));
+const L = await asTab('L', () => import(`${modPath}?tab=L`));
+await asTab('K', () => K.initCrossTabSync());
+await asTab('L', () => L.initCrossTabSync());
+await asTab('K', () => K.updateProgress((p) => ({
+  ...p, answers: { ...p.answers, 600: { correct: false, ts: 9000, selected: 2 } },
+})));
+check('missing-ts: legacy answer without ts survives the cross-tab merge',
+  !!JSON.parse(backing.get('series63_progress')).answers[9],
+  'an entry was dropped over a missing field');
+
+closeAllTabs();
+// ---- attempt identity: same ms+score, different timeUsed = two sittings ------
+backing.set('series63_progress', JSON.stringify(seed));
+const M2 = await asTab('M', () => import(`${modPath}?tab=M`));
+const N2 = await asTab('N', () => import(`${modPath}?tab=N`));
+await asTab('M', () => M2.initCrossTabSync());
+await asTab('N', () => N2.initCrossTabSync());
+pauseDelivery = true;
+await asTab('M', () => M2.updateProgress((p) => ({
+  ...p, mockAttempts: [{ ts: 12000, correct: 50, total: 60, pct: 83, timeUsed: 3000, answers: [] }, ...p.mockAttempts] })));
+await asTab('N', () => N2.updateProgress((p) => ({
+  ...p, mockAttempts: [{ ts: 12000, correct: 50, total: 60, pct: 83, timeUsed: 4500, answers: [] }, ...p.mockAttempts] })));
+flushDelivery();
+const att = JSON.parse(backing.get('series63_progress')).mockAttempts.filter((m) => m.ts === 12000);
+check('attempt identity: same ms + same score but different timeUsed are BOTH kept',
+  att.length === 2, `kept ${att.length} of 2`);
 
 console.log(`\n${pass} ok, ${fail} failed`);
 process.exit(fail ? 1 : 0);

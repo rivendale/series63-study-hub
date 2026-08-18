@@ -139,9 +139,13 @@ function quarantine(raw: string): void {
   // One slot, possibly already occupied from an earlier session. The old rule
   // was "never overwrite" — which silently DROPPED any second unreadable
   // record: no copy anywhere, destroyed by the next save. With one slot the
-  // honest policy is to keep whichever record is larger, since months of study
-  // are bytes and a bigger record is more record. Identical contents are the
-  // same trouble seen twice and need nothing.
+  // policy is keep-whichever-is-larger, because months of study are bytes and
+  // a bigger record is more record. THIS IS A HEURISTIC, NOT A PRESERVATION
+  // GUARANTEE: if the slot holds large junk and the new casualty is small and
+  // valuable, the valuable one is the one lost. Code cannot tell junk from
+  // value; a second slot would just move the same choice one step later. The
+  // real mitigation is the download-the-quarantine UI, which exists.
+  // Identical contents are the same trouble seen twice and need nothing.
   let existing: string | null = null;
   try {
     existing = window.localStorage.getItem(QUARANTINE_KEY);
@@ -300,13 +304,12 @@ export { defaultProgress };
  * when A re-merges B's result nothing is missing, nothing is contributed, and
  * nobody saves again.
  */
-function mergeProgress(
-  local: Progress,
-  remote: Progress
-): { merged: Progress; localContributed: boolean } {
-  let localContributed = false;
+function mergeProgress(local: Progress, remote: Progress): Progress {
   const resetAt = Math.max(local.resetAt ?? 0, remote.resetAt ?? 0);
-  const keep = (ts: number) => ts >= resetAt;
+  // An entry without a timestamp cannot be placed relative to a reset. With no
+  // reset anywhere, keep it (dropping data over a missing field is the bug this
+  // module exists to prevent); once a reset exists, it counts as pre-reset.
+  const keep = (ts: number | undefined) => (resetAt === 0 ? true : (ts ?? 0) >= resetAt);
 
   const answers: Progress['answers'] = {};
   for (const [qid, a] of Object.entries(remote.answers)) {
@@ -315,10 +318,7 @@ function mergeProgress(
   for (const [qid, a] of Object.entries(local.answers)) {
     if (!keep(a.ts)) continue;
     const r = answers[Number(qid)];
-    if (!r || a.ts > r.ts) {
-      answers[Number(qid)] = a;
-      localContributed = true;
-    }
+    if (!r || a.ts > r.ts) answers[Number(qid)] = a;
   }
 
   const topicsRead: Progress['topicsRead'] = {};
@@ -327,29 +327,46 @@ function mergeProgress(
   }
   for (const [t, ts] of Object.entries(local.topicsRead)) {
     if (!keep(ts)) continue;
-    if (!(t in topicsRead) || ts > topicsRead[t]) {
-      topicsRead[t] = ts;
-      localContributed = true;
-    }
+    if (!(t in topicsRead) || ts > topicsRead[t]) topicsRead[t] = ts;
   }
 
-  const attemptKey = (m: MockAttempt) => `${m.ts}:${m.total}:${m.correct}`;
+  // timeUsed joins the identity: two sittings finishing in the same millisecond
+  // with the same score is already remote across devices, but identity is cheap
+  // and a dropped sitting is not.
+  const attemptKey = (m: MockAttempt) => `${m.ts}:${m.total}:${m.correct}:${m.timeUsed}`;
   const remoteKept = remote.mockAttempts.filter((m) => keep(m.ts));
   const seen = new Set(remoteKept.map(attemptKey));
   const extra = local.mockAttempts.filter((m) => keep(m.ts) && !seen.has(attemptKey(m)));
-  if (extra.length > 0) localContributed = true;
   const mockAttempts = [...remoteKept, ...extra].sort((x, y) => y.ts - x.ts).slice(0, 50);
 
   return {
-    merged: {
-      ...remote,
-      answers,
-      topicsRead,
-      mockAttempts,
-      ...(resetAt > 0 ? { resetAt } : {}),
-    },
-    localContributed,
+    ...remote,
+    answers,
+    topicsRead,
+    mockAttempts,
+    ...(resetAt > 0 ? { resetAt } : {}),
   };
+}
+
+/**
+ * Order-independent equality for two records. JSON.stringify key order depends
+ * on construction history, so comparing raw strings would re-save records that
+ * differ only in key order — and a save fires a storage event, so a spurious
+ * difference is a spurious write loop.
+ */
+function canonical(value: unknown): string {
+  if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
+  if (value !== null && typeof value === 'object') {
+    return (
+      '{' +
+      Object.keys(value as Record<string, unknown>)
+        .sort()
+        .map((k) => JSON.stringify(k) + ':' + canonical((value as Record<string, unknown>)[k]))
+        .join(',') +
+      '}'
+    );
+  }
+  return JSON.stringify(value);
 }
 
 let crossTabInitialised = false;
@@ -377,8 +394,20 @@ export function initCrossTabSync(): void {
       return;
     }
     if (remote?.schemaVersion !== SCHEMA_VERSION) return;
-    const { merged, localContributed } = mergeProgress(current, remote);
-    current = localContributed ? save(merged) : merged;
+    const merged = mergeProgress(current, remote);
+    // Save exactly when the merge produced something the DISK record is not —
+    // one rule covering three failure shapes a per-entry "contributed" flag
+    // missed: a reset tombstone that existed only in memory (a stale tab's
+    // write resurrected pre-reset data on the next reload), preferences adopted
+    // in memory while disk said otherwise, and a pre-cap count that forced
+    // byte-identical re-saves. Termination is by convergence: a save publishes
+    // merged; the other tab's merge of (its current, merged) yields merged
+    // again, which equals its disk view, so nobody saves twice.
+    if (canonical(merged) !== canonical(remote)) {
+      current = save(merged);
+    } else {
+      current = merged;
+    }
     listeners.forEach((l) => l(current));
   });
 }
