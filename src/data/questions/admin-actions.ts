@@ -44,12 +44,12 @@ export const items: Question[] = [
     q: 'Under the 2002 Uniform Securities Act, a civil action must be brought within the EARLIER of:',
     choices: [
       '2 years after discovery of the facts constituting the violation OR 5 years after the violation',
-      '3 years after the violation OR 2 years after discovery',
+      '3 years after the contract of sale or the rendering of investment advice OR 2 years after discovery',
       '5 years after the violation OR 3 years after discovery',
       '1 year after discovery OR 3 years after the violation',
     ],
     answer: 0,
-    exp: 'Section 509(j) of the 2002 act sets the earlier of two years after discovery of the facts constituting the violation or five years after the violation. Read the stem carefully, because the second choice is not a made-up figure — it is the 1956 act (§410(f)), which bars suit more than three years after the contract of sale or the rendering of investment advice, or more than two years after discovery, whichever first occurs. Most states still run on 1956-based statutes, so 3-and-2 is the pair to reach for when a fact pattern names no act; this stem names the 2002 act, so the 2-and-5 pair governs. The criminal clock is separate again: no indictment more than five years after the alleged violation.',
+    exp: 'Section 509(j) of the 2002 act sets the earlier of two years after discovery of the facts constituting the violation or five years after the violation. Read the stem carefully, because the second choice is not a made-up figure — it is §410(f) of the 1956 act, stated correctly, and most states still run on 1956-based statutes. The stem names the 2002 act, so the 2-and-5 pair governs here. Note the 1956 act\'s trigger precisely: three years runs from the CONTRACT OF SALE or the RENDERING OF INVESTMENT ADVICE, not from the violation. Study material that renders it as "three years after the violation" has the figure right and the trigger wrong, and the advice trigger is the one that catches an adviser who never sold the client anything. The criminal clock is separate again: no indictment more than five years after the alleged violation.',
     difficulty: 'medium',
   },
   {

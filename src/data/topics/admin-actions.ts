@@ -94,7 +94,7 @@ Every registrant files an **irrevocable consent** appointing the Administrator a
     ],
     keyTerms: [
       { term: 'Civil rescission', definition: "Principal + legal interest - income received + attorneys' fees" },
-      { term: 'SOL', definition: 'Statute of limitations — 3 years from violation or 2 from discovery' },
+      { term: 'SOL', definition: '1956 act §410(f) — the earlier of 3 years from the contract of sale or the rendering of investment advice, or 2 years from discovery. Not "3 years from the violation": the trigger is the sale or the advice.' },
       { term: 'Summary order', definition: 'Emergency cease-and-desist without prior hearing' },
       { term: 'Statutory disqualification', definition: 'Felony or securities-related misdemeanor within the past 10 years (1956 act); the 2002 act drops the time limit for felonies' },
     ],
