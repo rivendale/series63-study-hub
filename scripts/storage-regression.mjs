@@ -1,7 +1,8 @@
 /**
  * Regression harness for src/lib/progressStore.ts. Plain Node, no browser.
  *
- *   node --experimental-strip-types scripts/storage-regression.mjs
+ *   node --experimental-strip-types --import ./scripts/ts-resolve-register.mjs \\
+ *        scripts/storage-regression.mjs
  *
  * Simulates TWO TABS sharing one localStorage. Each "tab" is a separate module
  * instance (query-string import). The window stub tags each tab's storage
@@ -238,6 +239,14 @@ flushDelivery();
 const att = JSON.parse(backing.get('series63_progress')).mockAttempts.filter((m) => m.ts === 12000);
 check('attempt identity: same ms + same score but different timeUsed are BOTH kept',
   att.length === 2, `kept ${att.length} of 2`);
+// EQUAL-TS DETERMINISM: both tabs and the disk must converge on ONE ordering.
+// Sorting by ts alone left equal-ts attempts in remote-first insertion order,
+// so the tabs derived mirror-ordered arrays and oscillated forever.
+const dumpM = JSON.stringify(M2.getProgress().mockAttempts.map((m) => m.timeUsed));
+const dumpN = JSON.stringify(N2.getProgress().mockAttempts.map((m) => m.timeUsed));
+const dumpD = JSON.stringify(JSON.parse(backing.get('series63_progress')).mockAttempts.map((m) => m.timeUsed));
+check('equal-ts determinism: both tabs and disk share one attempt ordering',
+  dumpM === dumpN && dumpN === dumpD, `M=${dumpM} N=${dumpN} disk=${dumpD}`);
 
 // ---- undefined-valued keys must not cause a write loop ----------------------
 closeAllTabs();

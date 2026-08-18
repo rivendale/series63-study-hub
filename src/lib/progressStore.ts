@@ -337,7 +337,19 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
   const remoteKept = remote.mockAttempts.filter((m) => keep(m.ts));
   const seen = new Set(remoteKept.map(attemptKey));
   const extra = local.mockAttempts.filter((m) => keep(m.ts) && !seen.has(attemptKey(m)));
-  const mockAttempts = [...remoteKept, ...extra].sort((x, y) => y.ts - x.ts).slice(0, 50);
+  // The sort must be a TOTAL order independent of which record played
+  // "remote": sorting by ts alone leaves equal-timestamp attempts in insertion
+  // order, which is remote-first — so the two tabs derive mirror-ordered
+  // arrays, each byte-different from the other, and the exchange oscillates
+  // forever (same-value suppression never triggers because the values genuinely
+  // alternate). The tiebreakers are the identity fields, so distinct attempts
+  // always order deterministically and identical ones were deduped above.
+  const mockAttempts = [...remoteKept, ...extra]
+    .sort(
+      (x, y) =>
+        y.ts - x.ts || y.timeUsed - x.timeUsed || y.correct - x.correct || y.total - x.total
+    )
+    .slice(0, 50);
 
   return {
     ...remote,
@@ -355,6 +367,10 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
  * difference is a spurious write loop.
  */
 function canonical(value: unknown): string {
+  // Scope: plain JSON data (numbers, strings, booleans, null, plain objects,
+  // dense arrays) — which is all a Progress record contains. Objects with
+  // toJSON methods or sparse arrays would diverge from JSON.stringify here;
+  // nothing in this store produces either.
   // undefined must canonicalise the way JSON.stringify persists it — dropped
   // from objects, null in arrays — or a key that is undefined in memory and
   // absent on disk reads as a difference on EVERY comparison: each tab then
