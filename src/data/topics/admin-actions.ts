@@ -64,16 +64,18 @@ For **willful** violations of the USA:
 
 ## Statute of Limitations
 
-The two model acts set **different** civil periods, and a third pairing circulates in prep material without matching either. Learn the structure first, then the numbers:
+The two model acts set **different** civil periods. Learn the structure first, then the numbers:
 
 | | Civil limitations period |
 | --- | --- |
-| **1956 act** (§410(e)) | **2 years after the contract of sale** |
+| **1956 act** (§410(f)) | the **earlier** of **3 years after the contract of sale** — or after the **rendering of investment advice** — or **2 years after discovery** of the facts constituting the violation |
 | **2002 act** (§509(j)) | the **earlier** of **2 years after discovery** of the facts constituting the violation or **5 years after the violation** |
 
-Most states still operate under statutes based on the **1956 act**, so that is the figure to reach for absent a fact pattern pointing elsewhere. Be aware that some study material teaches **3 years from the violation or 2 years from discovery** — that pairing is a teaching convention rather than the text of either model act, so do not be thrown if your other materials show it.
+Most states still operate under statutes based on the **1956 act**, so **3 and 2** is the pair to reach for absent a fact pattern pointing elsewhere.
 
-The durable point behind all three versions is the **structure**: a limitations period runs from the **earlier** of two triggers, one tied to the **conduct** and one tied to **discovery**, so a plaintiff cannot revive a stale claim merely by saying they only just found out.
+The structure is the same in both, and it is what the question usually turns on: the period runs from the **earlier** of a **conduct** trigger and a **discovery** trigger. Discovery can only **shorten** the window, never extend it. A buyer who discovers the violation four years after the sale is out of time under the 1956 act even though the discovery was yesterday; a buyer who spotted it on day one has **2** years, not 3. "Whichever first occurs" is doing the work — a plaintiff cannot revive a stale claim by pleading late discovery.
+
+Note the 1956 act's second conduct trigger: **the rendering of investment advice**, not only a contract of sale. An advisory claim is timed from when the advice was given, so the clock runs against an adviser who never sold the client anything.
 
 **Criminal** cases run on their own clock — the 1956 act bars an indictment or information more than **5 years** after the alleged violation. Do not carry the civil figure across to the criminal side.
 

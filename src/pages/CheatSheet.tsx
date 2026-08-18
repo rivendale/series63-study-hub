@@ -25,7 +25,7 @@ const thresholds: ThresholdRow[] = [
   { rule: 'Form U5 filing', threshold: 'Within 30 days of termination' },
   { rule: 'Hearing set down after written request', threshold: 'Within 15 days of the request (not a deadline to ask)' },
   { rule: 'Securities registration period', threshold: 'Typically 1 year' },
-  { rule: 'Civil statute of limitations', threshold: '1956 act: 2 yrs after contract of sale · 2002 act: earlier of 2 yrs after discovery / 5 yrs after violation' },
+  { rule: 'Civil statute of limitations', threshold: '1956 act (§410(f)): earlier of 3 yrs after sale or rendering of advice, or 2 yrs after discovery · 2002 act: earlier of 2 yrs after discovery / 5 yrs after violation' },
   { rule: 'Criminal statute of limitations', threshold: '5 yrs after the alleged violation (1956 act)' },
   { rule: 'Criminal penalty per willful violation', threshold: '$5,000 / 3 yrs — model-act maximums; adopting states set their own' },
   { rule: 'RMD age (post-SECURE 2.0)', threshold: '73 (rises to 75 in 2033)' },
