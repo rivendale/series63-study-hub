@@ -296,5 +296,28 @@ const disk5 = JSON.parse(backing.get('series63_progress'));
 check('quota-cycle: disk record is a valid trimmed record',
   Array.isArray(disk5.mockAttempts) && disk5.mockAttempts.length <= 50);
 
+// ---- malformed attempt (timeUsed:null) must not reopen the oscillation ------
+closeAllTabs();
+backing.set('series63_progress', JSON.stringify({ ...seed, mockAttempts: [] }));
+const S2 = await asTab('S', () => import(`${modPath}?tab=S`));
+const T2 = await asTab('T', () => import(`${modPath}?tab=T`));
+await asTab('S', () => S2.initCrossTabSync());
+await asTab('T', () => T2.initCrossTabSync());
+pauseDelivery = true;
+await asTab('S', () => S2.updateProgress((p) => ({
+  ...p, mockAttempts: [{ ts: 15000, correct: 30, total: 60, pct: 50, timeUsed: null, answers: [] }] })));
+await asTab('T', () => T2.updateProgress((p) => ({
+  ...p, mockAttempts: [{ ts: 15000, correct: 30, total: 60, pct: 50, timeUsed: 0, answers: [] }] })));
+let nullWrites = 0;
+const origSet2 = localStorageStub.setItem;
+localStorageStub.setItem = (k, v) => { if (k === 'series63_progress') nullWrites++; return origSet2(k, v); };
+flushDelivery();
+localStorageStub.setItem = origSet2;
+check('null-timeUsed: exchange converges (bounded writes)', nullWrites <= 4,
+  `saw ${nullWrites} writes — malformed identity re-opened the oscillation`);
+const dumpS = JSON.stringify(S2.getProgress().mockAttempts);
+const dumpT = JSON.stringify(T2.getProgress().mockAttempts);
+check('null-timeUsed: both tabs converge on identical bytes', dumpS === dumpT);
+
 console.log(`\n${pass} ok, ${fail} failed`);
 process.exit(fail ? 1 : 0);

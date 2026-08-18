@@ -315,6 +315,12 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
   for (const [qid, a] of Object.entries(remote.answers)) {
     if (keep(a.ts)) answers[Number(qid)] = a;
   }
+  // Ties (equal ts) keep the REMOTE entry, and that is load-bearing for
+  // termination, not an accident: a remote-wins tie means whichever tab merges
+  // first ADOPTS the other's value, so when its save reaches the other tab,
+  // that tab's merge compares equal and goes silent. A local-wins tie would
+  // make each side reassert its own value forever. The same argument covers
+  // preferences (taken from remote below).
   for (const [qid, a] of Object.entries(local.answers)) {
     if (!keep(a.ts)) continue;
     const r = answers[Number(qid)];
@@ -344,10 +350,19 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
   // forever (same-value suppression never triggers because the values genuinely
   // alternate). The tiebreakers are the identity fields, so distinct attempts
   // always order deterministically and identical ones were deduped above.
+  // The final tiebreak compares identity STRINGS, which is total for any
+  // JSON-representable values: the loader accepts any schemaVersion-1 record,
+  // and a hand-imported attempt with timeUsed:null subtracts as 0 against a
+  // real 0 — numeric ties on malformed data would fall back to remote-first
+  // insertion order and re-open the mirror-order oscillation.
   const mockAttempts = [...remoteKept, ...extra]
     .sort(
       (x, y) =>
-        y.ts - x.ts || y.timeUsed - x.timeUsed || y.correct - x.correct || y.total - x.total
+        y.ts - x.ts ||
+        y.timeUsed - x.timeUsed ||
+        y.correct - x.correct ||
+        y.total - x.total ||
+        (attemptKey(x) < attemptKey(y) ? -1 : attemptKey(x) > attemptKey(y) ? 1 : 0)
     )
     .slice(0, 50);
 
