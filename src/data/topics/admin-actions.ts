@@ -69,9 +69,12 @@ The two model acts set **different** civil periods. Learn the structure first, t
 | | Civil limitations period |
 | --- | --- |
 | **1956 act** (§410(f)) | the **earlier** of **3 years after the contract of sale** — or after the **rendering of investment advice** — or **2 years after discovery** of the facts constituting the violation |
-| **2002 act** (§509(j)) | the **earlier** of **2 years after discovery** of the facts constituting the violation or **5 years after the violation** |
+| **2002 act** — fraud (§509(j)(2)) | the **earlier** of **2 years after discovery** of the facts constituting the violation or **5 years after the violation** |
+| **2002 act** — registration violation (§509(j)(1)) | **1 year after the violation** — a single trigger, no discovery prong |
 
 Most states still operate under statutes based on the **1956 act**, so **3 and 2** is the pair to reach for absent a fact pattern pointing elsewhere.
+
+Note that the **2002 act splits by claim type where the 1956 act does not.** A claim resting on a **registration** violation gets **1 year from the violation** under §509(j)(1) — flat, with no discovery extension, because nothing needs discovering: the security was unregistered on the day it was sold. Only **fraud** claims get the 2-and-5 pair under §509(j)(2). If a question about the 2002 act says "the **earlier** of", it is describing the fraud branch.
 
 The structure is the same in both, and it is what the question usually turns on: the period runs from the **earlier** of a **conduct** trigger and a **discovery** trigger. Discovery can only **shorten** the window, never extend it. A buyer who discovers the violation four years after the sale is out of time under the 1956 act even though the discovery was yesterday; a buyer who spotted it on day one has **2** years, not 3. "Whichever first occurs" is doing the work — a plaintiff cannot revive a stale claim by pleading late discovery.
 
