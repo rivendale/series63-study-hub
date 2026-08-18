@@ -31,4 +31,9 @@ lerna-debug.log*
 
 tsconfig.tsbuildinfo
 
-package-lock.json
+# package-lock.json was ignored here until 2026-08-18, with no reason recorded.
+# The consequence: `npm ci` fails outright, every build resolves dependency
+# versions afresh, and the artifact published to Cloudflare Pages is verifiable
+# by CONTENT but not by PROVENANCE -- two builds of the same commit can differ
+# and nothing says which one is live. Committed deliberately; this is an app,
+# not a library.
