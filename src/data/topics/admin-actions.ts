@@ -64,16 +64,22 @@ For **willful** violations of the USA:
 
 ## Statute of Limitations
 
-The two model acts set **different** civil periods, and a third pairing circulates in prep material without matching either. Learn the structure first, then the numbers:
+The two model acts set **different** civil periods. Learn the structure first, then the numbers:
 
 | | Civil limitations period |
 | --- | --- |
-| **1956 act** (§410(e)) | **2 years after the contract of sale** |
+| **1956 act** (§410(f)) | the **earlier** of **3 years after the contract of sale or the rendering of investment advice**, or **2 years after discovery** of the facts constituting the violation |
 | **2002 act** (§509(j)) | the **earlier** of **2 years after discovery** of the facts constituting the violation or **5 years after the violation** |
 
-Most states still operate under statutes based on the **1956 act**, so that is the figure to reach for absent a fact pattern pointing elsewhere. Be aware that some study material teaches **3 years from the violation or 2 years from discovery** — that pairing is a teaching convention rather than the text of either model act, so do not be thrown if your other materials show it.
+Most states still operate under statutes based on the **1956 act**, so that is the pair to reach for absent a fact pattern pointing elsewhere.
 
-The durable point behind all three versions is the **structure**: a limitations period runs from the **earlier** of two triggers, one tied to the **conduct** and one tied to **discovery**, so a plaintiff cannot revive a stale claim merely by saying they only just found out.
+Two details in the 1956 text are easy to miss and both are testable. The limitations
+clause is **§410(f)**, not §410(e) — §410(e) is the survival-of-action provision. And the
+conduct trigger is not only a sale: the clock also runs from **the rendering of investment
+advice**, which is the branch that matters when the claim is against an adviser rather
+than a seller.
+
+The durable point behind both is the **structure**: the period runs from the **earlier** of two triggers, one tied to the **conduct** and one tied to **discovery**, so a plaintiff cannot revive a stale claim merely by saying they only just found out.
 
 **Criminal** cases run on their own clock — the 1956 act bars an indictment or information more than **5 years** after the alleged violation. Do not carry the civil figure across to the criminal side.
 

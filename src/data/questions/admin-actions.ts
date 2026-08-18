@@ -49,7 +49,7 @@ export const items: Question[] = [
       '1 year after discovery OR 3 years after the violation',
     ],
     answer: 0,
-    exp: 'Section 509(j) of the 2002 act sets the earlier of two years after discovery of the facts constituting the violation or five years after the violation. Two things worth holding alongside it. Most states still operate under statutes based on the 1956 act, which used a single trigger — two years after the CONTRACT OF SALE — so a fact pattern not naming an act is more likely reaching for that. And the "3 years from violation or 2 years from discovery" pairing offered here as a distractor circulates widely in study material despite matching neither model act; recognise it as a teaching convention rather than statutory text. The criminal clock is separate again: no indictment more than five years after the alleged violation.',
+    exp: 'Section 509(j) of the 2002 act sets the earlier of two years after discovery of the facts constituting the violation or five years after the violation. Two things worth holding alongside it. Most states still operate under statutes based on the 1956 act, whose §410(f) sets the earlier of three years after the contract of sale or the rendering of investment advice, or two years after discovery — so a fact pattern not naming an act is more likely reaching for that pair. Note that the distractor here is the 1956 formulation: it is a real rule, just not the one this question asks for. The criminal clock is separate again: no indictment more than five years after the alleged violation.',
     difficulty: 'medium',
   },
   {
