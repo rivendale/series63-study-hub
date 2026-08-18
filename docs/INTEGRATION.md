@@ -18,8 +18,9 @@ Vite 7 · React 18.3 · TypeScript strict · Tailwind 3 · React Router 6
 git clone <repo> && npm install && npm run dev
 ```
 
-That is all of it. **No environment variables, no secrets, no services, no
-backend.** Progress lives in `localStorage`. That property is worth defending:
+That is all of it for the **app**: no environment variables, no secrets, no
+services, no backend. (CI is separate — the review workflow consumes a secret.
+Nothing in the application runtime does.) Progress lives in `localStorage`. That property is worth defending:
 client-side-only means no credentials to leak, no server to patch, and a study
 record that works offline.
 
@@ -66,7 +67,8 @@ hurt them, not which topics they happened to open.
 
 **The review manifest.** `reviewItems.ts` is the single source for every passage
 flagged for review; the in-app page and `REVIEW.md` both render from it. Each
-entry carries `questionIds` — the questions that must change if the rule does.
+entry carries `questionIds` where the rule is keyed to questions — those are the
+questions that must change if the rule does. Not every entry has them.
 
 **The shared core.** `src/core/` holds the exam-agnostic engine: structural
 types, shuffle/sample, the five-box Leitner scheduler, storage health. One rule,
@@ -97,7 +99,7 @@ tamper-check, not a synchronisation mechanism.
 |---|---|
 | Upgrade to Vite 8 | `vite-plugin-pwa` does not support it. Close the Dependabot PR. |
 | Add `cache: npm` to `setup-node` | **No lockfile is committed** and CI runs `npm install`, not `npm ci`. The cache step fails without a lockfile. If you want reproducible installs, commit the lockfile and change all three together. |
-| Bump `SCHEMA_VERSION` for an additive change | A version mismatch **quarantines every existing progress record**. Additive means optional fields and no bump; incompatible means bump *and write the migration first*. |
+| Bump `SCHEMA_VERSION` for an additive change | A version mismatch sends existing progress down the **quarantine** path instead of loading it. Read `src/core/storage.ts` before assuming what survives — the behaviour has conditions. Additive means optional fields and no bump; incompatible means bump *and write the migration first*. |
 | Put a backtick or `${` in a chapter body | Chapter bodies are template literals — either one ends or hijacks it. Plain `$50,000` is fine. |
 | Fix a rule in a chapter and stop there | See the sweep list below. |
 | Trust a local clone without fetching | Some pushes commit server-side without moving the local ref, so `git rev-parse origin/<branch>` can report a branch missing that the API shows present. Start with `git fetch`. |
@@ -151,7 +153,7 @@ Moving off a subpath is not the three-place change the original handover
 recorded. Measured on this repo:
 
 ```bash
-grep -n "<repo-name>" vite.config.ts index.html
+grep -n "$(node -p "require('./package.json').name")" vite.config.ts index.html
 ```
 
 ```
@@ -170,8 +172,9 @@ one commit and verify the built `dist/index.html` references resolve.
 
 ## Still outside core, with reasons
 
-`stats.ts` needs its dependency inverted — take questions, topics and categories
-as arguments instead of importing them. That single change is what blocks sharing
+`stats.ts` needs its dependency inverted — it imports questions, topics and
+categories, and also `examInfo` and `Progress` from hooks. All of those become
+arguments. That single change is what blocks sharing
 it, and it is the same reason the two copies drifted. Sync (`mergeProgress`,
 `syncClient`, `syncCrypto`) moves when a second app needs it.
 

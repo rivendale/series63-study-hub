@@ -4,9 +4,10 @@
  * Two checks, both cheap:
  *
  * 1. Every file in src/core hashes to the value recorded in MANIFEST.sha256.
- *    Every consuming repo carries the same manifest, so a change made in one
- *    repo and not propagated to the others fails here instead of turning into
- *    the silent divergence that made this extraction necessary.
+ *    This catches an UNREGENERATED local edit to core. It does NOT catch
+ *    cross-repository drift: after core:regen this repo's manifest matches this
+ *    repo's files and the sibling's matches the sibling's, so both pass while
+ *    holding different cores. Propagation is a manual diff between the trees.
  *
  * 2. No core file imports from an app directory. Core describes the shape it
  *    needs and receives data; the moment it reaches into src/data it has become
