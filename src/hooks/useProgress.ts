@@ -9,6 +9,7 @@ import {
 import {
   defaultProgress,
   getProgress as storeGetProgress,
+  initCrossTabSync,
   subscribeProgress,
   updateProgress,
   type MockAttempt,
@@ -49,6 +50,7 @@ export function useProgress() {
     // after it has been lost; the persistence request resolves whenever it
     // resolves and changes nothing about how the app behaves meanwhile.
     initStorageHealth();
+    initCrossTabSync();
     setStorage(getStorageState());
     return unsubscribe;
   }, []);
@@ -96,7 +98,10 @@ export function useProgress() {
   );
 
   const resetAll = useCallback(() => {
-    updateProgress(() => ({ ...defaultProgress }));
+    // resetAt is what makes a reset survive a cross-tab merge: without it, the
+    // other tab's memory merges everything straight back and "reset" silently
+    // becomes "restore". See mergeProgress in progressStore.
+    updateProgress(() => ({ ...defaultProgress, resetAt: Date.now() }));
   }, []);
 
   const exportJson = useCallback(() => {

@@ -94,5 +94,32 @@ check('larger second unreadable record is preserved somewhere', q === bigGarbage
   `quarantine still holds the FIRST (${q?.length} chars); the 4000-char record has no copy and the next save destroys it`);
 void C; void D;
 
+// ---- reset semantics across tabs -------------------------------------------
+// A reset in one tab must not be silently undone by the other tab's memory —
+// and an answer recorded AFTER the reset must survive the merge.
+backing.set('series63_progress', JSON.stringify(seed));
+const E = await asTab('E', () => import(`${modPath}?tab=E`));
+const F = await asTab('F', () => import(`${modPath}?tab=F`));
+await asTab('E', () => E.initCrossTabSync());
+await asTab('F', () => F.initCrossTabSync());
+check('reset setup: both tabs hold the seed', !!E.getProgress().answers[1] && !!F.getProgress().answers[1]);
+// E resets (as the hook does: default + resetAt)
+await asTab('E', () => E.updateProgress(() => ({
+  schemaVersion: 1, answers: {}, topicsRead: {}, mockAttempts: [],
+  preferences: { fontSize: 'md', theme: 'system' }, resetAt: 5000,
+})));
+check('reset: F adopted the reset instead of resurrecting old answers',
+  !F.getProgress().answers[1],
+  'F merged its pre-reset memory back; reset became restore');
+const disk2 = JSON.parse(backing.get('series63_progress'));
+check('reset: disk stays reset', !disk2.answers?.[1]);
+// F answers something new, after the reset
+await asTab('F', () => F.updateProgress((p) => ({
+  ...p, answers: { ...p.answers, 300: { correct: true, ts: 6000, selected: 1 } },
+})));
+check('reset: post-reset answer in F reaches disk',
+  !!JSON.parse(backing.get('series63_progress')).answers[300]);
+check('reset: post-reset answer visible in E', !!E.getProgress().answers[300]);
+
 console.log(`\n${pass} ok, ${fail} failed`);
 process.exit(fail ? 1 : 0);

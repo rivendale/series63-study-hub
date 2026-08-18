@@ -44,6 +44,15 @@ export interface Progress {
   >;
   topicsRead: Record<string, number>;
   mockAttempts: MockAttempt[];
+  /**
+   * When the student last chose "reset everything", ms epoch. OPTIONAL and
+   * additive — no schemaVersion bump, same reasoning as box/due above. It
+   * exists for cross-tab merges: without it, a reset in one tab is merged
+   * straight back from the other tab's memory, and "reset" silently becomes
+   * "restore". Entries recorded AFTER the reset survive a merge; entries from
+   * before it stay gone.
+   */
+  resetAt?: number;
   preferences: {
     fontSize: 'sm' | 'md' | 'lg';
     theme: 'system' | 'light' | 'dark';
@@ -126,9 +135,24 @@ function quarantine(raw: string): void {
   // Too small to be a real study record — a stray value or a truncated stub.
   // Raising an alarm over these would train the user to dismiss the alarm.
   if (raw.length < RESCUE_MIN_CHARS) return;
-  // Already held from an earlier session. Overwriting it with a second copy of
-  // the same trouble would gain nothing and could cost the first one.
-  if (noteExistingQuarantine()) return;
+
+  // One slot, possibly already occupied from an earlier session. The old rule
+  // was "never overwrite" — which silently DROPPED any second unreadable
+  // record: no copy anywhere, destroyed by the next save. With one slot the
+  // honest policy is to keep whichever record is larger, since months of study
+  // are bytes and a bigger record is more record. Identical contents are the
+  // same trouble seen twice and need nothing.
+  let existing: string | null = null;
+  try {
+    existing = window.localStorage.getItem(QUARANTINE_KEY);
+  } catch {
+    reportUnreadableRecord({ key: QUARANTINE_KEY, bytes: raw.length, preserved: false });
+    return;
+  }
+  if (existing !== null && (existing === raw || existing.length >= raw.length)) {
+    reportUnreadableRecord({ key: QUARANTINE_KEY, bytes: existing.length, preserved: true });
+    return;
+  }
   try {
     window.localStorage.setItem(QUARANTINE_KEY, raw);
     reportUnreadableRecord({ key: QUARANTINE_KEY, bytes: raw.length, preserved: true });
@@ -263,3 +287,98 @@ export function updateProgress(updater: (p: Progress) => Progress): void {
 }
 
 export { defaultProgress };
+
+
+/**
+ * Merge two records after a cross-tab write. Union, newest-wins per entry:
+ * answers by per-question timestamp, topics by timestamp, mock attempts by
+ * identity, preferences from the remote record because the storage event means
+ * the other tab wrote LAST and preferences are a deliberate choice.
+ *
+ * `localContributed` is the termination guarantee for the save loop below:
+ * tab B saves its merge only if it added something the disk record lacked, so
+ * when A re-merges B's result nothing is missing, nothing is contributed, and
+ * nobody saves again.
+ */
+function mergeProgress(
+  local: Progress,
+  remote: Progress
+): { merged: Progress; localContributed: boolean } {
+  let localContributed = false;
+  const resetAt = Math.max(local.resetAt ?? 0, remote.resetAt ?? 0);
+  const keep = (ts: number) => ts >= resetAt;
+
+  const answers: Progress['answers'] = {};
+  for (const [qid, a] of Object.entries(remote.answers)) {
+    if (keep(a.ts)) answers[Number(qid)] = a;
+  }
+  for (const [qid, a] of Object.entries(local.answers)) {
+    if (!keep(a.ts)) continue;
+    const r = answers[Number(qid)];
+    if (!r || a.ts > r.ts) {
+      answers[Number(qid)] = a;
+      localContributed = true;
+    }
+  }
+
+  const topicsRead: Progress['topicsRead'] = {};
+  for (const [t, ts] of Object.entries(remote.topicsRead)) {
+    if (keep(ts)) topicsRead[t] = ts;
+  }
+  for (const [t, ts] of Object.entries(local.topicsRead)) {
+    if (!keep(ts)) continue;
+    if (!(t in topicsRead) || ts > topicsRead[t]) {
+      topicsRead[t] = ts;
+      localContributed = true;
+    }
+  }
+
+  const attemptKey = (m: MockAttempt) => `${m.ts}:${m.total}:${m.correct}`;
+  const remoteKept = remote.mockAttempts.filter((m) => keep(m.ts));
+  const seen = new Set(remoteKept.map(attemptKey));
+  const extra = local.mockAttempts.filter((m) => keep(m.ts) && !seen.has(attemptKey(m)));
+  if (extra.length > 0) localContributed = true;
+  const mockAttempts = [...remoteKept, ...extra].sort((x, y) => y.ts - x.ts).slice(0, 50);
+
+  return {
+    merged: {
+      ...remote,
+      answers,
+      topicsRead,
+      mockAttempts,
+      ...(resetAt > 0 ? { resetAt } : {}),
+    },
+    localContributed,
+  };
+}
+
+let crossTabInitialised = false;
+
+/**
+ * Adopt writes made by OTHER TABS. Without this, two open tabs each hold the
+ * whole record in memory and every save is a whole-record write: last writer
+ * wins and the other tab's answers are silently destroyed — proven by
+ * scripts/storage-regression.mjs against the unfixed store.
+ *
+ * The `storage` event fires only in tabs that did NOT write, which is exactly
+ * the delivery we need. Parse failures are ignored here rather than
+ * quarantined: the writing tab owns that record's trouble, and a reader
+ * quarantining a record it merely observed would fight the owner for the slot.
+ */
+export function initCrossTabSync(): void {
+  if (crossTabInitialised || typeof window === 'undefined') return;
+  crossTabInitialised = true;
+  window.addEventListener('storage', (e: StorageEvent) => {
+    if (e.key !== STORAGE_KEY || typeof e.newValue !== 'string') return;
+    let remote: Progress;
+    try {
+      remote = JSON.parse(e.newValue) as Progress;
+    } catch {
+      return;
+    }
+    if (remote?.schemaVersion !== SCHEMA_VERSION) return;
+    const { merged, localContributed } = mergeProgress(current, remote);
+    current = localContributed ? save(merged) : merged;
+    listeners.forEach((l) => l(current));
+  });
+}
