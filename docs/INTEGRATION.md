@@ -99,7 +99,7 @@ tamper-check, not a synchronisation mechanism.
 |---|---|
 | Upgrade to Vite 8 | `vite-plugin-pwa` does not support it. Close the Dependabot PR. |
 | Add `cache: npm` to `setup-node` | **No lockfile is committed** and CI runs `npm install`, not `npm ci`. The cache step fails without a lockfile. If you want reproducible installs, commit the lockfile and change all three together. |
-| Bump `SCHEMA_VERSION` for an additive change | A version mismatch sends existing progress down the **quarantine** path instead of loading it. Read `src/core/storage.ts` before assuming what survives — the behaviour has conditions. Additive means optional fields and no bump; incompatible means bump *and write the migration first*. |
+| Bump `SCHEMA_VERSION` for an additive change | A version mismatch sends existing progress down the **quarantine** path instead of loading it. Read the `quarantine()` implementation before assuming what survives (grep `QUARANTINE_KEY`; it lives with the progress store, not in core) — the behaviour has conditions. Additive means optional fields and no bump; incompatible means bump *and write the migration first*. |
 | Put a backtick or `${` in a chapter body | Chapter bodies are template literals — either one ends or hijacks it. Plain `$50,000` is fine. |
 | Fix a rule in a chapter and stop there | See the sweep list below. |
 | Trust a local clone without fetching | Some pushes commit server-side without moving the local ref, so `git rev-parse origin/<branch>` can report a branch missing that the API shows present. Start with `git fetch`. |
