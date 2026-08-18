@@ -15,6 +15,7 @@
 const backing = new Map();
 let currentTab = 'boot';
 let pauseDelivery = false;
+let quotaLimit = null;
 const queued = [];
 // Close every open "tab" between scenarios. Without this, a tab from an
 // earlier scenario keeps merging into later ones — scenario I's reset
@@ -40,7 +41,18 @@ const localStorageStub = {
   getItem: (k) => (backing.has(k) ? backing.get(k) : null),
   setItem: (k, v) => {
     const oldValue = backing.has(k) ? backing.get(k) : null;
+    // Browser-accurate quota: throw before storing when a limit is armed.
+    if (quotaLimit !== null && String(v).length > quotaLimit) {
+      const err = new Error('QuotaExceededError'); err.name = 'QuotaExceededError';
+      throw err;
+    }
     backing.set(k, String(v));
+    // HTML spec: the storage event MUST NOT fire when the new value equals the
+    // old. This suppression is load-bearing for termination — the stub fired
+    // unconditionally at first, which manufactured an infinite loop the
+    // browser cannot exhibit (and would have hidden the fact that termination
+    // DEPENDS on this suppression plus deterministic merges).
+    if (oldValue === String(v)) return;
     const ev = { key: k, oldValue, newValue: String(v) };
     // A write from inside tab B's storage handler is B's write, even though it
     // happens during A's dispatch. Without re-tagging around each handler call,
@@ -226,6 +238,54 @@ flushDelivery();
 const att = JSON.parse(backing.get('series63_progress')).mockAttempts.filter((m) => m.ts === 12000);
 check('attempt identity: same ms + same score but different timeUsed are BOTH kept',
   att.length === 2, `kept ${att.length} of 2`);
+
+// ---- undefined-valued keys must not cause a write loop ----------------------
+closeAllTabs();
+backing.set('series63_progress', JSON.stringify(seed));
+const O = await asTab('O', () => import(`${modPath}?tab=O`));
+const P2 = await asTab('P', () => import(`${modPath}?tab=P`));
+await asTab('O', () => O.initCrossTabSync());
+await asTab('P', () => P2.initCrossTabSync());
+let writesBefore = 0;
+const countKey = 'series63_progress';
+const origSet = localStorageStub.setItem;
+let writeCount = 0;
+localStorageStub.setItem = (k, v) => { if (k === countKey) writeCount++; return origSet(k, v); };
+await asTab('O', () => O.updateProgress((p) => ({
+  ...p, answers: { ...p.answers, 700: { correct: true, ts: 13000, selected: undefined } },
+})));
+localStorageStub.setItem = origSet;
+check('undefined-key: no write storm (bounded writes after one update)', writeCount <= 3,
+  `saw ${writeCount} writes to the progress key for ONE update — canonical() disagrees with JSON round-trip`);
+check('undefined-key: tabs converge', !!P2.getProgress().answers[700]);
+
+// ---- quota-pressure cycle must reach a fixed point ---------------------------
+closeAllTabs();
+const bigAttempt = (ts, tag) => ({ ts, correct: 40, total: 60, pct: 67, timeUsed: 3000 + ts,
+  answers: Array.from({ length: 40 }, (_, i) => ({ qid: i, selected: 1, correct: true })), });
+backing.set('series63_progress', JSON.stringify({ ...seed, mockAttempts: [] }));
+const Q2 = await asTab('Q', () => import(`${modPath}?tab=Q`));
+const R2 = await asTab('R', () => import(`${modPath}?tab=R`));
+await asTab('Q', () => Q2.initCrossTabSync());
+await asTab('R', () => R2.initCrossTabSync());
+pauseDelivery = true;
+await asTab('Q', () => Q2.updateProgress((p) => ({
+  ...p, mockAttempts: Array.from({ length: 30 }, (_, i) => bigAttempt(20000 + i, 'q')) })));
+await asTab('R', () => R2.updateProgress((p) => ({
+  ...p, mockAttempts: Array.from({ length: 30 }, (_, i) => bigAttempt(30000 + i, 'r')) })));
+// Arm a quota that forces the trim path on merge (union of 60 big attempts).
+quotaLimit = JSON.stringify({ ...seed,
+  mockAttempts: Array.from({ length: 40 }, (_, i) => bigAttempt(40000 + i)) }).length;
+let cycleWrites = 0;
+localStorageStub.setItem = (k, v) => { if (k === countKey) cycleWrites++; return origSet(k, v); };
+flushDelivery();
+localStorageStub.setItem = origSet;
+quotaLimit = null;
+check('quota-cycle: the exchange reaches a fixed point (bounded writes)', cycleWrites <= 6,
+  `saw ${cycleWrites} writes — tabs are oscillating between two trims`);
+const disk5 = JSON.parse(backing.get('series63_progress'));
+check('quota-cycle: disk record is a valid trimmed record',
+  Array.isArray(disk5.mockAttempts) && disk5.mockAttempts.length <= 50);
 
 console.log(`\n${pass} ok, ${fail} failed`);
 process.exit(fail ? 1 : 0);

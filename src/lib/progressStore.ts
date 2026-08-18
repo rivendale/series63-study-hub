@@ -355,13 +355,21 @@ function mergeProgress(local: Progress, remote: Progress): Progress {
  * difference is a spurious write loop.
  */
 function canonical(value: unknown): string {
+  // undefined must canonicalise the way JSON.stringify persists it — dropped
+  // from objects, null in arrays — or a key that is undefined in memory and
+  // absent on disk reads as a difference on EVERY comparison: each tab then
+  // "fixes" the disk, fires an event, and the tabs write-loop forever. Found
+  // in review before it shipped.
+  if (value === undefined) return 'null';
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
   if (value !== null && typeof value === 'object') {
+    const rec = value as Record<string, unknown>;
     return (
       '{' +
-      Object.keys(value as Record<string, unknown>)
+      Object.keys(rec)
+        .filter((k) => rec[k] !== undefined)
         .sort()
-        .map((k) => JSON.stringify(k) + ':' + canonical((value as Record<string, unknown>)[k]))
+        .map((k) => JSON.stringify(k) + ':' + canonical(rec[k]))
         .join(',') +
       '}'
     );
@@ -400,9 +408,17 @@ export function initCrossTabSync(): void {
     // missed: a reset tombstone that existed only in memory (a stale tab's
     // write resurrected pre-reset data on the next reload), preferences adopted
     // in memory while disk said otherwise, and a pre-cap count that forced
-    // byte-identical re-saves. Termination is by convergence: a save publishes
-    // merged; the other tab's merge of (its current, merged) yields merged
-    // again, which equals its disk view, so nobody saves twice.
+    // byte-identical re-saves.
+    //
+    // TERMINATION, stated carefully because a review broke the first version:
+    // save() may persist a TRIM rather than merged (quota rescue), so "a save
+    // publishes merged" is not guaranteed. What terminates the exchange is the
+    // pair of facts that (a) the merge and the trim are deterministic, so a
+    // tab re-deriving the same record writes a byte-identical string, and
+    // (b) the storage event MUST NOT fire when the stored value is unchanged
+    // (HTML spec) — so the second identical write is silent and the exchange
+    // stops. The harness models both facts and drives a quota-pressure cycle
+    // to a fixed point.
     if (canonical(merged) !== canonical(remote)) {
       current = save(merged);
     } else {
