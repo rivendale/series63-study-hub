@@ -104,10 +104,17 @@ export function weightedReadiness(progress: Progress): WeightedReadiness {
     return { pct: null, projectedScore: null, blindCategories: blind.map((c) => c.name), complete: false };
   }
 
-  // Re-normalise over the categories we can actually see, so a missing
-  // category drags the estimate toward zero rather than silently counting as 0%.
-  const weightSeen = usable.reduce((s, c) => s + c.weight, 0);
-  const weighted = usable.reduce((s, c) => s + c.pct * c.weight, 0) / weightSeen;
+  // Weight against the FULL blueprint, not just the categories we can see, so a
+  // category with too little data drags the estimate toward zero.
+  //
+  // This previously divided by the seen weight, which did the exact OPPOSITE of
+  // what this comment claimed: re-normalising removes the gap's effect entirely.
+  // A student who answered 5 questions in one category at 100% and nothing else
+  // scored 100% and was shown a projected perfect exam. Dividing by the full
+  // blueprint weight gives 47% for that case. A student who has covered every
+  // category is unaffected, because then the two divisors are equal.
+  const totalWeight = cats.reduce((s, c) => s + c.weight, 0);
+  const weighted = usable.reduce((s, c) => s + c.pct * c.weight, 0) / totalWeight;
   const pct = Math.round(weighted);
 
   return {
